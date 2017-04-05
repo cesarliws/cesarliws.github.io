@@ -9,7 +9,7 @@
     <meta name="generator" content="Hugo 0.19-DEV" />
 
     
-    <title>@cesarliws’s Software Development</title>
+    <title>Delphi Defer &middot; @cesarliws’s Software Development</title>
 
     <link rel="stylesheet" href="https://cesarliws.github.io/css/weblog.css" media="screen" charset="utf-8" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.2.14/css/lightgallery.min.css" type="text/css" />
@@ -51,50 +51,57 @@
 
 
   <main class="content">
-    
 
-  
-
-  
-
-  
-
-  
     <article class="post">
-  
-    <h2><a rel="full-article" href="https://cesarliws.github.io/posts/delphi-defer/">Delphi Defer</a></h2>
-  
+      
+        <h2><a rel="full-article" href="https://cesarliws.github.io/posts/delphi-defer/">Delphi Defer</a></h2>
+      
 
-  <div class="postmeta">Posted on <time datetime="2017-04-05 17:02:27 -0300 BRT" pubdate="">April 5, 2017</time>
-    
-  </div>
+      <div class="postmeta">Posted on <time datetime="2017-04-05 17:02:27 -0300 BRT" pubdate="">April 5, 2017</time> in
+        <span class="categories">
+          
+        </span>
+      </div>
 
-  <p>
-    
-      IDeferrer define o padrão &ldquo;defer execute procedure&rdquo;, que deve agendar a procedure TProc para ser executada imediatamente após o fim do método que fez a chamada ao Defer(Proc).
-Adiar a execução de procedures tem algumas vantagens:
- Garante que você não vai esquecer de finalizar/fechar um recurso, um erro bem comum quando é feito a manutenção do código e novas condições são adicionadas, criando um novo caminho para o fluxo da procedure;
-    
-  </p>
+      <p>
+        <p>IDeferrer define o padrão &ldquo;defer execute procedure&rdquo;, que deve agendar a
+procedure TProc para ser executada imediatamente após o fim do método que
+fez a chamada ao Defer(Proc).</p>
 
-  
-    
-      <a class="continue" rel="full-article" href="https://cesarliws.github.io/posts/delphi-defer/">Continue Reading »</a>
-    
-  
-</article>
+<p>Adiar a execução de procedures tem algumas vantagens:</p>
 
-  
+<ul>
+<li><p>Garante que você não vai esquecer de finalizar/fechar um recurso,
+um erro bem comum quando é feito a manutenção do código e novas condições
+são adicionadas, criando um novo caminho para o fluxo da procedure;</p></li>
 
+<li><p>O código de finalização fica junto ao de inicialização, que é
+mais legível do que colocar no fim do método;</p></li>
 
+<li><p>Dispensa a necessidade de blocos try/finally para garantir que um
+recurso seja finalizado.</p></li>
 
-<div class="pagination">
-  
+<li><p>Mesmo que ocorra uma Exception, todos os métodos agendados no defer
+serão executados.</p></li>
+</ul>
 
-  
+<p>Exemplos da sua utilização são desbloquear um CriticalSection, fechar um
+arquivo ou fechar uma conexão com o banco de dados.</p>
 
-  
-</div>
+<p>Evite usar defer dentro de loops, isso pode causar um aumento excessivo
+de memória se muitos objetos forem alocados, podendo ocasionar o erro
+&ldquo;Out of memory&rdquo;.</p>
+
+<p>Ao usar com métodos anonimos tenha em mente que o estado é capturado,
+qualquer variável utilizada, terá o valor capturado no momento em que
+o defer for declarado e não o valor alterado durante o fluxo da
+procedure.</p>
+
+<p>Esta padrão é baseado na function Defer em #Golang e não tem relação
+aos padrões &ldquo;Deferred/Promise&rdquo; e &ldquo;Deferred Choice&rdquo;.</p>
+
+      </p>
+    </article>
 
 
   </main>
