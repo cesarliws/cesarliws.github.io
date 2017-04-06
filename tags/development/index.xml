@@ -2,9 +2,9 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
 
-    <title>@cesarliws’s cook bytes - Development</title>
+    <title>@cesarliws’s cooking bytes - Development</title>
     <link>https://cesarliws.github.io/tags/development/index.xml</link>
-    <description>All entries in Development on cook bytes</description>
+    <description>All entries in Development on cooking bytes</description>
     <generator>Hugo -- gohugo.io</generator>
     
     <copyright>Everything is mine</copyright>
