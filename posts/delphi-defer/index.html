@@ -43,13 +43,6 @@
               
             </li>
         
-            <li>
-              <a href="/en/">English</a>
-              
-                <a href="/en/index.xml"><img src="/img/rss.svg" class="rss-icon" /></a>
-              
-            </li>
-        
         
       </ul>
     </div>
@@ -71,16 +64,217 @@
       </div>
 
       <p>
-        <p>IDeferrer define o padrão &ldquo;defer execute procedure&rdquo;, que deve agendar a
-procedure TProc para ser executada imediatamente após o fim do método que
-fez a chamada ao Defer(Proc).</p>
+        
+
+<h1 id="draft">Draft</h1>
+
+<p>Atenção: Este artigo ainda está sendo revisado, pode sofrer alterações.</p>
+
+<h2 id="origem">Origem</h2>
+
+<p>Na semana passada eu estava refatorando um código do framework &ldquo;Foundation 4 Delphi&rdquo;, pois precisava extender o TComponent.TRecursiveEnumerator para utilizar em outras classes, era uma implementação antiga e resolvi reescrever com generics e aproveitar a vantagem dos smart records para simplificar a integração com o meu TComponentHelper class helper.</p>
+
+<p>Na implementação do record, precisei criar um field &ldquo;IInterface&rdquo; simplemente para poder simular um destructor no record, foi quando eu pensei como seria bom se tivessemos o <a href="https://golang.org/doc/effective_go.html#defer">Defer</a> do Golang. Quando estava escrevendo os testes unitários, novamente senti a necessidade do Defer, foi quando decidi pensar mais no padrão e comportamento do Defer, o que me levou a tentar implementar em Delphi, apenas para um exercício de lógica, mesmo inicialmente achando que não seria algo útil para produção, mas para a minha surpresa, consegui algo muito útil.</p>
+
+<h2 id="o-conceito">O Conceito</h2>
+
+<p>Defer define o padrão &ldquo;adiar a execução de uma procedure&rdquo;, este adiamento deve agendar a execução de uma &ldquo;procedure TProc&rdquo; para após o fim do método que executou a chamada ao Defer(Procedure: TProc).</p>
+
+<p>No final do método o Defer deve executar todas as procedures empilhadas na ordem inversa ao agendamento.</p>
+
+<p><a href="https://golang.org/doc/effective_go.html#defer">Defer de acordo com a documentação da Golang</a>:</p>
+
+<blockquote>
+<p>A declaração defer agenda a chamada da função (a função adiada) para ser executada imediatamente antes da função executando o defer retornar. É uma maneira incomum, mas eficiente de lidar com situações em que recursos devem ser liberados independentes do fluxo que a função executar até retornar. Os exemplos regulares são desbloquear um mutex ou fechar um arquivo.</p>
+</blockquote>
+
+<p>Uma informação importante aqui, é que Golang é uma linguagem com garbage collection, então não é necessário destruir os objetos criados, apenas desalocar recursos.</p>
+
+<p>E independente do fluxo executado na função o Defer sempre deve executar os métodos já agendados, então se houver um Exit antes do final ou se ocorrer uma exceção, todos os métodos agendados devem ser executados.</p>
+
+<p>Outros exemplos:</p>
+
+<ul>
+<li>Fechar conexão com banco de dados</li>
+<li>Finalizar Transação com banco de dados</li>
+<li>Finalizar conexão de socket</li>
+<li>Fechars arquivos</li>
+<li>Desbloquear um Critical Section</li>
+</ul>
+
+<h2 id="a-implementação">A Implementação</h2>
+
+<p>Após analisar o comportamento e entender como o Defer dever funcionar, comecei a implementar utilizando Interfaces, assim ela seria automaticamente desalocada quando a Interface sair de contexto, esta foi fácil.
+<pre>
+  IDeferrer = Interface(IInterface)
+    function Defer(Proc: TProc): IDeferrer;
+  end;
+</pre>
+Seguindo o padrão adotado em Golang para nomear Interface, adicionei o sufixo &ldquo;er&rdquo; e fiz o ajuste para ficar de acordo gramaticalmente.</p>
+
+<p>Internamente, ele deve manter uma pilha com a lista de TProc agendadas, assim estes métodos podem ser executados em ordem inversa quando o objeto TDefer for destruído, sem problemas pois Delphi tem uma implementação de TStack<T> em System.Generics.Collections, mas aqui teve um truque, pois na hora de tirar o TProc da pilha, estava tendo alguns problemas que resolvi decorando o TProc com um record antes de armazenar.
+<pre>
+  TDeferrer = class(TInterfacedObject, IDeferrer)
+  strict private
+    type
+      TStackItem = record
+        Proc: TProc;
+      end;
+  strict private
+    FStack: TStack<TStackItem>;
+    procedure Push(Proc: TProc);
+    procedure ProcessStack;
+  public
+    constructor Create; overload;
+    constructor Create(Proc: TProc); overload;
+    destructor Destroy; override;
+    function Defer(Proc: TProc): IDeferrer;
+  end;
+</pre></p>
+
+<p>E para finalizar, criei uma função global que retorna o IDeferrer:
+<pre>
+function Defer(Proc: TProc): IDeferrer;
+begin
+  Result := TDeferrer.Create(Proc);
+end;
+</pre></p>
+
+<h2 id="como-usar">Como usar</h2>
+
+<p>O objetivo do Defer é adiar métodos, não gerenciar o tempo de vida de objetos, mas como em Delphi Win32/Win64 os objetos são gerenciados manualmente, podemos utilizar o Defer para destruir os objetos, além de finalizar outros recursos.
+<pre>
+var
+  Database: TDatabase;
+  Exec: IDeferrer;
+  Query: TQuery;
+  Transaction: TTransaction;
+begin
+  Database := TDatabase.Create(FWriter);
+  Exec := Defer(Database.Free);
+  Database.Open(&lsquo;foundation-db&rsquo;);
+  Exec.Defer(Database.Close);
+  Transaction := Database.StartTransaction;
+  Exec.Defer(Transaction.Free);
+  Exec.Defer(Transaction.Commit);
+  Query := Transaction.Query;
+  Exec.Defer(Query.Free);
+  if Query.Open(&lsquo;select value from table&rsquo;) then
+  begin
+    Exec.Defer(Query.Close);
+  end;
+end;
+</pre></p>
+
+<p>Este código é parte dos testes unitários que eu escrevi, os objetos são apenas Mock e o FWriter passado no construtor é utilizar para gravar as etapas, para que eu possa testar o resultado, aqui está o resultado do log do defer neste método:
+<pre>
+  TDatabase.Open = foundation-db
+  TDatabase.StartTransaction
+  TTransaction.Query
+  TQuery.Create
+  TQuery.Open(select value from table) = True
+  TQuery.RecordCount = 2
+  TQuery.EOF = False
+  TQuery.Value = 0
+  TQuery.Next = True
+  TQuery.EOF = False
+  TQuery.Value = 1
+  TQuery.Next = True
+  TQuery.EOF = True
+// Defer inicia aqui
+  TQuery.Close
+  TQuery.Free
+  TTransaction.Commit
+  TTransaction.Free
+  TDatabase.Close
+  TDatabase.Free
+</pre></p>
+
+<p>Note que o Defer acontece apenas depois de TQuery.EOF, exatamente na ordem inversa em que os métodos foram agendados no Defer.</p>
+
+<p>Outro detalhe é que eu declarei uma variável &ldquo;Exec: IDeferrer&rdquo;, para reutilizar a mesma instância do Defer, é mais eficiente, mas não é necessário. Se não declarar a variável a cada chamada terá uma nova instância, minha preocupação era a ordem que as instãncias seriam destruídas seria a mesma do único Defer executando os métodos, em todos os testes que eu executei no Win32 e Win64 foi consistente, mas não encontrei nenhuma informação sobre a ordem em que as IInterfaces são desalocadas, se alguém tiver alguma referência por favor me envie, seria bom confirmar.</p>
+
+<p>Para deixar os testes mais interessantes, fiz uma outra implementação experimental, em que eu captura a Thread e o endereço de memória do método que chamou o Defer, e utilizo como chave para salvar a instância do Defer em um TDictionary&lt;&gt;, para poder reutilizar sempre a mesma instância. Funcionou perfeitamente, testes executados em Win32, Win64 e também chamando de várias Threads. Este código vai ficar na pasta Experimental e provavelmente não vou utilizar em produção, pra Win32 eu extraí um método da JclDebug, que não funcionou em Win64, para este é necessário utilizar a JclDebug completa.</p>
+
+<p>Não acredito que valha a pena utilizar esta versão, pois todo o código adicional e a dependência já ficariam maiores que o overhead das multiplas instâncias, lembrando nunca teremos muitas instâncias em memória ao mesmo tempo, mais sobre isso a seguir.</p>
+
+<h3 id="mais-exemplos">Mais exemplos</h3>
+
+<h4 id="métodos-anonimos">Métodos Anonimos</h4>
+
+<pre>
+  Database := TDatabase.Create(FWriter);
+  Database.Open('database-name');
+  Defer(
+    procedure
+    begin
+      Database.Close;
+      Database.Free;
+    end
+  );
+</pre> 
+
+<h4 id="também-consegui-implementar-um-tracer">Também consegui implementar um Tracer</h4>
+
+<pre>
+class function TTrace.Method(Writer: TStringsWriter; const MethodName: string; var TraceProc: ITracer): IDeferrer;
+var
+  {! Workaround "Defer(ITracer.Exit)" : E2010 Incompatible types: 'TProc' and 'procedure, untyped pointer or untyped parameter' }
+  Trace: TTrace;
+begin
+  Trace := TTrace.Create(Writer);
+  Trace.Enter(MethodName);
+  Result := Defer(Trace.Exit);
+  Supports(Trace, ITracer, TraceProc)
+end;
+
+var
+  Trace: ITracer;
+begin
+  TTrace.Method(FWriter, 'DelegateDeferToTraceExecute', Trace);
+  Trace.Step('First');
+  Trace.Step('Second');
+  Trace.Step('Third');
+end;
+</pre> 
+Que gerou o log: 
+<pre>
+    > Enter DelegateDeferToTraceExecute
+        1. DelegateDeferToTraceExecute: First
+        2. DelegateDeferToTraceExecute: Second
+        3. DelegateDeferToTraceExecute: Third
+    < Exit DelegateDeferToTraceExecute
+</pre> 
+
+<h4 id="e-em-records-que-foi-o-me-levou-a-implementar-o-defer">E em records, que foi o me levou a implementar o Defer</h4>
+
+<p><pre>
+type
+  TValueType<T> = record
+  private
+    FAnyObject: TAnyObject;
+    FDeferrer: IDeferrer;
+    FValue: T;
+  public
+    constructor Create(Value: T);
+  end;<br />
+constructor TValueType<T>.Create(Value: T);
+begin
+  FValue := Value;
+  FAnyObject := TAnyObject.Create
+  FDeferrer := Defer(FAnyObject.Free);
+end;
+</pre>
+Neste caso o Defer funciona como um destructor para o record.</p>
+
+<h2 id="vantagens">Vantagens</h2>
 
 <p>Adiar a execução de procedures tem algumas vantagens:</p>
 
 <ul>
-<li><p>Garante que você não vai esquecer de finalizar/fechar um recurso,
+<li><p>Garante que você não vai esquecer finalizar um recurso,
 um erro bem comum quando é feito a manutenção do código e novas condições
-são adicionadas, criando um novo caminho para o fluxo da procedure;</p></li>
+são adicionadas, criando um novo fluxo.</p></li>
 
 <li><p>O código de finalização fica junto ao de inicialização, que é
 mais legível do que colocar no fim do método;</p></li>
@@ -88,26 +282,37 @@ mais legível do que colocar no fim do método;</p></li>
 <li><p>Dispensa a necessidade de blocos try/finally para garantir que um
 recurso seja finalizado.</p></li>
 
-<li><p>Mesmo que ocorra uma Exception, todos os métodos agendados no defer
+<li><p>Mesmo que ocorra uma Exception, todos os métodos agendados no Defer
 serão executados.</p></li>
 </ul>
 
-<p>Exemplos da sua utilização são desbloquear um CriticalSection, fechar um
-arquivo ou fechar uma conexão com o banco de dados.</p>
+<h2 id="ressalvas">Ressalvas</h2>
 
-<p>Evite usar defer dentro de loops, isso pode causar um aumento excessivo
-de memória se muitos objetos forem alocados, podendo ocasionar o erro
-&ldquo;Out of memory&rdquo;.</p>
+<ul>
+<li><p>O defer adiciona um pequeno overhead, pois um objeto é criado e a sua finalização irá acumular a execução das procedures, código que seria executado de qualquer forma. Mas eu considero que se não se tratar de um código de alta performance, a utilização traz mais vantagens que desvantagens.</p></li>
 
-<p>Ao usar com métodos anonimos tenha em mente que o estado é capturado,
+<li><p>Evite usar defer dentro de loops, se for necessário alocar e desalocar recursos dentro de um loop, a desalocação deve ser deterministica. O uso excessivo pode aumentar muito o consumo de memória e causar lentidão.</p></li>
+
+<li><p>Ao usar com métodos anonimos tenha em mente que o estado é capturado,
 qualquer variável utilizada, terá o valor capturado no momento em que
 o defer for declarado e não o valor alterado durante o fluxo da
-procedure.</p>
+procedure.</p></li>
+</ul>
 
+<h2 id="informações-adicionais">Informações adicionais</h2>
+
+<blockquote>
 <p>Esta padrão é baseado na function Defer em #Golang e não tem relação
 aos padrões &ldquo;Deferred/Promise&rdquo; e &ldquo;Deferred Choice&rdquo;.</p>
+</blockquote>
 
-<p>{{ partial &ldquo;disqus.html&rdquo; . }}</p>
+<h2 id="repositório">Repositório</h2>
+
+<ul>
+<li><a href="https://github.com/cesarliws/foundation-4-delphi">Foundation 4 Delphi</a></li>
+</ul>
+
+<p>O projeto está hospedado no github, eu farei outro post apenas para falar do framework e do que estou preparando para ele. Muita coisa está pronto e em produção, então tentarei enviar código semanalmente.</p>
 
       </p>
     </article>
@@ -118,12 +323,12 @@ aos padrões &ldquo;Deferred/Promise&rdquo; e &ldquo;Deferred Choice&rdquo;.</p>
 <footer>
   <div class="footer_text">
       <div>
-        <h3>Olá, <a href="">Eu sou Cesar</a></h3>
+        <h3>Hi, <a href="">I'm Cesar</a></h3>
         <p>
-          Arquiteto de software na <a href="www.triersistemas.com.br">Trier Sistemas</a>, e
+          Software Architect at <a href="www.triersistemas.com.br">Trier Sistemas</a>, and
 <br /> <a href="https://www.embarcadero.com/embarcadero-mvp-program">Embarcadero MVP</a>.
-<br /> Palestrante Regular em conferências de software. 
-<br /> [desktop, cloud e mobile na maioria em <a href="https://www.embarcadero.com/products/delphi">Delphi</a> e <a href="https://golang.org/">Golang</a>]
+<br /> Regular speaker at software conferences. 
+<br /> [desktop, cloud and mobile in mostly in <a href="https://www.embarcadero.com/products/delphi">Delphi</a> and <a href="https://golang.org/">Golang</a>]
 
         </p>
       </div>

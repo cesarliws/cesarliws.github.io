@@ -2,14 +2,14 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
 
-    <title>@cesarliws’s cook bytes - cook bytes</title>
-    <link>https://cesarliws.github.io/index.xml</link>
-    <description>All entries in cook bytes on cook bytes</description>
+    <title>@cesarliws’s cook bytes - Delphi</title>
+    <link>https://cesarliws.github.io/tags/delphi/index.xml</link>
+    <description>All entries in Delphi on cook bytes</description>
     <generator>Hugo -- gohugo.io</generator>
     
     <copyright>Everything is mine</copyright>
-    <lastBuildDate>Wed, 05 Apr 2017 17:02:27 -0300</lastBuildDate>
-    <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+    <atom:link href="/tags/delphi/index.xml" rel="self" type="application/rss+xml" />
     
       
       <item>

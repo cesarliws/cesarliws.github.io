@@ -2,14 +2,14 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
 
-    <title>@cesarliws’s cook bytes - cook bytes</title>
-    <link>https://cesarliws.github.io/index.xml</link>
-    <description>All entries in cook bytes on cook bytes</description>
+    <title>@cesarliws’s cook bytes - Design Pattern</title>
+    <link>https://cesarliws.github.io/tags/design-pattern/index.xml</link>
+    <description>All entries in Design Pattern on cook bytes</description>
     <generator>Hugo -- gohugo.io</generator>
     
     <copyright>Everything is mine</copyright>
-    <lastBuildDate>Wed, 05 Apr 2017 17:02:27 -0300</lastBuildDate>
-    <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+    <atom:link href="/tags/design-pattern/index.xml" rel="self" type="application/rss+xml" />
     
       
       <item>
