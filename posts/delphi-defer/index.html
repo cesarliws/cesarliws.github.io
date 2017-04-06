@@ -121,8 +121,6 @@ Seguindo o padrão adotado em Golang para nomear Interface, adicionei o sufixo &
 
 <p>Internamente, ele deve manter uma pilha com a lista de TProc agendadas, assim estes métodos podem ser executados em ordem inversa quando o objeto TDefer for destruído, sem problemas pois Delphi tem uma implementação de TStack&lt; T &gt; em System.Generics.Collections, mas aqui teve um truque, pois na hora de tirar o TProc da pilha, estava tendo alguns problemas que resolvi decorando o TProc com um record TStackItem antes de armazenar.
 <pre>
-uses
-  Foundation.System;
 type
   TDeferrer = class(TInterfacedObject, IDeferrer)
   strict private
@@ -154,6 +152,8 @@ end;
 
 <p>O objetivo do Defer é adiar métodos, não gerenciar o tempo de vida de objetos, mas como em Delphi Win32/Win64 os objetos são gerenciados manualmente, podemos utilizar o Defer para destruir os objetos, além de finalizar outros recursos.
 <pre>
+uses
+  Foundation.System;
 var
   Database: TDatabase;
   Exec: IDeferrer;
