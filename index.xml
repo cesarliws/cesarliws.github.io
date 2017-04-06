@@ -22,7 +22,12 @@
 
 &lt;h1 id=&#34;draft&#34;&gt;Draft&lt;/h1&gt;
 
-&lt;p&gt;Atenção: Este artigo ainda está sendo revisado, pode sofrer alterações.&lt;/p&gt;
+&lt;h3 id=&#34;atenção&#34;&gt;Atenção&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Este artigo ainda está sendo revisado, pode sofrer alterações.&lt;/li&gt;
+&lt;li&gt;A tradução para inglês será disponibilizada em breve.&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;h2 id=&#34;origem&#34;&gt;Origem&lt;/h2&gt;
 
@@ -73,7 +78,7 @@
 &lt;/pre&gt;
 Seguindo o padrão adotado em Golang para nomear Interface, adicionei o sufixo &amp;ldquo;er&amp;rdquo; e fiz o ajuste para ficar de acordo gramaticalmente.&lt;/p&gt;
 
-&lt;p&gt;Internamente, ele deve manter uma pilha com a lista de TProc agendadas, assim estes métodos podem ser executados em ordem inversa quando o objeto TDefer for destruído, sem problemas pois Delphi tem uma implementação de TStack&amp;lt; T &amp;gt; em System.Generics.Collections, mas aqui teve um truque, pois na hora de tirar o TProc da pilha, estava tendo alguns problemas que resolvi decorando o TProc com um record TStackItem antes de armazenar.
+&lt;p&gt;Internamente, ele deve manter uma pilha com a lista de TProc agendadas, assim estes métodos podem ser executados em ordem inversa quando o objeto TDefer for destruído, sem problemas pois Delphi tem uma implementação de TStack&amp;lt;T&amp;gt; em System.Generics.Collections, mas aqui teve um truque, pois na hora de tirar o TProc da pilha, estava tendo alguns problemas que resolvi decorando o TProc com um record TStackItem antes de armazenar.
 &lt;pre&gt;
 type
   TDeferrer = class(TInterfacedObject, IDeferrer)
@@ -83,7 +88,7 @@ type
         Proc: TProc;
       end;
   strict private
-    FStack: TStack&amp;lt; TStackItem &amp;gt;;
+    FStack: TStack&amp;lt;TStackItem&amp;gt;;
     procedure Push(Proc: TProc);
     procedure ProcessStack;
   public
@@ -148,11 +153,19 @@ end;
 
 &lt;p&gt;Note que o Defer acontece apenas depois de TQuery.Open, exatamente na ordem inversa em que os métodos foram agendados no Defer.&lt;/p&gt;
 
-&lt;p&gt;Outro detalhe é que eu declarei uma variável &amp;ldquo;Exec: IDeferrer&amp;rdquo;, para reutilizar a mesma instância do Defer, é mais eficiente, mas não é necessário. Se não declarar a variável a cada chamada terá uma nova instância, minha preocupação era a ordem que as instãncias seriam destruídas seria a mesma do único Defer executando os métodos, em todos os testes que eu executei no Win32 e Win64 foi consistente, mas não encontrei nenhuma informação sobre a ordem em que as IInterfaces são desalocadas, se alguém tiver alguma referência por favor me envie, seria bom confirmar.&lt;/p&gt;
+&lt;p&gt;Outro detalhe é a declaração da variável &amp;ldquo;Exec: IDeferrer&amp;rdquo; para reutilizar a mesma instância. Declarando uma variável e reutilizando nas próximas chamadas somente uma instância é alocada, algo que pode ser dispensado para o benefício de ter o código mais limpo com uma pequena sobrecarga.&lt;/p&gt;
 
-&lt;p&gt;Para deixar os testes mais interessantes, fiz uma outra implementação experimental, em que eu captura a Thread e o endereço de memória do método que chamou o Defer, e utilizo como chave para salvar a instância do Defer em um TDictionary&amp;lt; Key, Deferrer &amp;gt;, para poder reutilizar sempre a mesma instância. Funcionou perfeitamente, testes executados em Win32, Win64 e também chamando de várias Threads. Este código vai ficar na pasta Experimental e provavelmente não vou utilizar em produção, pra Win32 eu extraí um método da JclDebug, que não funcionou em Win64, para este é necessário utilizar a JclDebug completa.&lt;/p&gt;
+&lt;p&gt;Se a referência do IDeferrer não for armazenada em uma variável local, uma nova uma nova instância será criada a cada chamada ao Defer. Seria um problema se a ordem em que as instâncias são desalocadas não fosse a mesma do Defer, mas o comportamento foi consistente em todos os testes. Acredito ser o comportamento padrão do gerenciador de memória do Delphi, o FastMM, armazenar as instâncias alocadas em uma pilha, desta forma a ordem para desalocar é a mesma da implementação do Defer. Se o gerenciador de memória do seu projeto for outro como ScaleMM ou Nexus Memory Manager sugiro fazer testes antes de usar o Defer.&lt;/p&gt;
 
-&lt;p&gt;Não acredito que valha a pena utilizar esta versão, pois todo o código adicional e a dependência já ficariam maiores que o overhead das multiplas instâncias, lembrando nunca teremos muitas instâncias em memória ao mesmo tempo, mais sobre isso a seguir.&lt;/p&gt;
+&lt;h3 id=&#34;uma-implementação-alternativa&#34;&gt;Uma implementação alternativa&lt;/h3&gt;
+
+&lt;p&gt;Na pasta Experimental do repositório tem uma implementação alternativa que extende o Defer na unit &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/cesarliws/foundation-4-delphi/blob/master/Experimental/Foundation.Pattern.Defer.Auto.pas&#34;&gt;Foundation.Pattern.Defer.Auto.pas&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Esta implementação captura a Thread e o ponteiro do método que chamou o Defer e as utiliza como chave para salvar a instância do Defer em um TDictionary&amp;lt;string, IDeferrer&amp;gt; para reutilizar sempre a mesma instância. Funcionou em todos os testes executados em win32, win64, single e multi thread.&lt;/p&gt;
+
+&lt;p&gt;Para capturar o ponteiro do método que iniciou a chamada utilizei a unit &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/project-jedi/jcl/blob/master/jcl/source/windows/JclDebug.pas&#34;&gt;JclDebug.pas&lt;/a&gt; do projeto Jedi Jcl. Para win32 foi possível extrair o básico necessário e colocar na unit &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/cesarliws/foundation-4-delphi/blob/master/Experimental/Foundation.Vendor.JclDebug.pas&#34;&gt;Foundation.Vendor.JclDebug.pas&lt;/a&gt;, com os devidos créditos e licença, dispensando a necessidade de instalar a Jcl completa no ambiente de testes. Para win64 é necessário utilizar a unit JclDebug, também recomendada para ambiente de produção.&lt;/p&gt;
+
+&lt;p&gt;A vantagem é clara, apenas uma instância de Defer é criada para cada método de origem, mas por outro lado a sobrecarga gerada da implementação da lista em TDictionary, o mutex necessário para garantir o bom comportamento em multi thread e a dependência da Jcl são maiores do que declarar uma variável ou ter mais de uma instância por método de origem. Tendo em mente que em um comportamento padrão de uma aplicação normal, não haverá muitas instâncias ao mesmo tempo.&lt;/p&gt;
 
 &lt;h3 id=&#34;mais-exemplos&#34;&gt;Mais exemplos&lt;/h3&gt;
 
@@ -218,9 +231,9 @@ Defer(
 );
 &lt;/pre&gt; 
 
-&lt;h4 id=&#34;e-em-records-que-foi-o-me-levou-a-implementar-o-defer&#34;&gt;E em records, que foi o me levou a implementar o Defer&lt;/h4&gt;
+&lt;h4 id=&#34;defer-como-destructor-para-o-record&#34;&gt;Defer como destructor para o record&lt;/h4&gt;
 
-&lt;p&gt;&lt;pre&gt;
+&lt;pre&gt;
 type
   TValueType&lt;T&gt; = record
   private
@@ -229,15 +242,14 @@ type
     FValue: T;
   public
     constructor Create(Value: T);
-  end;&lt;br /&gt;
+  end;  
 constructor TValueType&lt;T&gt;.Create(Value: T);
 begin
   FValue := Value;
   FAnyObject := TAnyObject.Create
   FDeferrer := Defer(FAnyObject.Free);
 end;
-&lt;/pre&gt;
-Neste caso o Defer funciona como um destructor para o record.&lt;/p&gt;
+&lt;/pre&gt; 
 
 &lt;h2 id=&#34;vantagens&#34;&gt;Vantagens&lt;/h2&gt;
 
@@ -261,7 +273,7 @@ serão executados.&lt;/p&gt;&lt;/li&gt;
 &lt;h2 id=&#34;ressalvas&#34;&gt;Ressalvas&lt;/h2&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;O defer adiciona um pequeno overhead, pois um objeto é criado e a sua finalização irá acumular a execução das procedures, código que seria executado de qualquer forma. Mas eu considero que se não se tratar de um código de alta performance, a utilização traz mais vantagens que desvantagens.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;O defer adiciona uma pequena sobrecarga, pois um objeto é criado e a sua finalização irá acumular a execução das procedures, código que seria executado de qualquer forma. Mas eu considero que se não se tratar de um código de alta performance, a utilização traz mais vantagens que desvantagens.&lt;/p&gt;&lt;/li&gt;
 
 &lt;li&gt;&lt;p&gt;Evite usar defer dentro de loops, se for necessário alocar e desalocar recursos dentro de um loop, a desalocação deve ser deterministica. O uso excessivo pode aumentar muito o consumo de memória e causar lentidão.&lt;/p&gt;&lt;/li&gt;
 

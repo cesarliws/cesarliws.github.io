@@ -68,7 +68,12 @@
 
 <h1 id="draft">Draft</h1>
 
-<p>Atenção: Este artigo ainda está sendo revisado, pode sofrer alterações.</p>
+<h3 id="atenção">Atenção</h3>
+
+<ul>
+<li>Este artigo ainda está sendo revisado, pode sofrer alterações.</li>
+<li>A tradução para inglês será disponibilizada em breve.</li>
+</ul>
 
 <h2 id="origem">Origem</h2>
 
@@ -119,7 +124,7 @@
 </pre>
 Seguindo o padrão adotado em Golang para nomear Interface, adicionei o sufixo &ldquo;er&rdquo; e fiz o ajuste para ficar de acordo gramaticalmente.</p>
 
-<p>Internamente, ele deve manter uma pilha com a lista de TProc agendadas, assim estes métodos podem ser executados em ordem inversa quando o objeto TDefer for destruído, sem problemas pois Delphi tem uma implementação de TStack&lt; T &gt; em System.Generics.Collections, mas aqui teve um truque, pois na hora de tirar o TProc da pilha, estava tendo alguns problemas que resolvi decorando o TProc com um record TStackItem antes de armazenar.
+<p>Internamente, ele deve manter uma pilha com a lista de TProc agendadas, assim estes métodos podem ser executados em ordem inversa quando o objeto TDefer for destruído, sem problemas pois Delphi tem uma implementação de TStack&lt;T&gt; em System.Generics.Collections, mas aqui teve um truque, pois na hora de tirar o TProc da pilha, estava tendo alguns problemas que resolvi decorando o TProc com um record TStackItem antes de armazenar.
 <pre>
 type
   TDeferrer = class(TInterfacedObject, IDeferrer)
@@ -129,7 +134,7 @@ type
         Proc: TProc;
       end;
   strict private
-    FStack: TStack&lt; TStackItem &gt;;
+    FStack: TStack&lt;TStackItem&gt;;
     procedure Push(Proc: TProc);
     procedure ProcessStack;
   public
@@ -194,11 +199,19 @@ end;
 
 <p>Note que o Defer acontece apenas depois de TQuery.Open, exatamente na ordem inversa em que os métodos foram agendados no Defer.</p>
 
-<p>Outro detalhe é que eu declarei uma variável &ldquo;Exec: IDeferrer&rdquo;, para reutilizar a mesma instância do Defer, é mais eficiente, mas não é necessário. Se não declarar a variável a cada chamada terá uma nova instância, minha preocupação era a ordem que as instãncias seriam destruídas seria a mesma do único Defer executando os métodos, em todos os testes que eu executei no Win32 e Win64 foi consistente, mas não encontrei nenhuma informação sobre a ordem em que as IInterfaces são desalocadas, se alguém tiver alguma referência por favor me envie, seria bom confirmar.</p>
+<p>Outro detalhe é a declaração da variável &ldquo;Exec: IDeferrer&rdquo; para reutilizar a mesma instância. Declarando uma variável e reutilizando nas próximas chamadas somente uma instância é alocada, algo que pode ser dispensado para o benefício de ter o código mais limpo com uma pequena sobrecarga.</p>
 
-<p>Para deixar os testes mais interessantes, fiz uma outra implementação experimental, em que eu captura a Thread e o endereço de memória do método que chamou o Defer, e utilizo como chave para salvar a instância do Defer em um TDictionary&lt; Key, Deferrer &gt;, para poder reutilizar sempre a mesma instância. Funcionou perfeitamente, testes executados em Win32, Win64 e também chamando de várias Threads. Este código vai ficar na pasta Experimental e provavelmente não vou utilizar em produção, pra Win32 eu extraí um método da JclDebug, que não funcionou em Win64, para este é necessário utilizar a JclDebug completa.</p>
+<p>Se a referência do IDeferrer não for armazenada em uma variável local, uma nova uma nova instância será criada a cada chamada ao Defer. Seria um problema se a ordem em que as instâncias são desalocadas não fosse a mesma do Defer, mas o comportamento foi consistente em todos os testes. Acredito ser o comportamento padrão do gerenciador de memória do Delphi, o FastMM, armazenar as instâncias alocadas em uma pilha, desta forma a ordem para desalocar é a mesma da implementação do Defer. Se o gerenciador de memória do seu projeto for outro como ScaleMM ou Nexus Memory Manager sugiro fazer testes antes de usar o Defer.</p>
 
-<p>Não acredito que valha a pena utilizar esta versão, pois todo o código adicional e a dependência já ficariam maiores que o overhead das multiplas instâncias, lembrando nunca teremos muitas instâncias em memória ao mesmo tempo, mais sobre isso a seguir.</p>
+<h3 id="uma-implementação-alternativa">Uma implementação alternativa</h3>
+
+<p>Na pasta Experimental do repositório tem uma implementação alternativa que extende o Defer na unit <a target="_blank" href="https://github.com/cesarliws/foundation-4-delphi/blob/master/Experimental/Foundation.Pattern.Defer.Auto.pas">Foundation.Pattern.Defer.Auto.pas</a>.</p>
+
+<p>Esta implementação captura a Thread e o ponteiro do método que chamou o Defer e as utiliza como chave para salvar a instância do Defer em um TDictionary&lt;string, IDeferrer&gt; para reutilizar sempre a mesma instância. Funcionou em todos os testes executados em win32, win64, single e multi thread.</p>
+
+<p>Para capturar o ponteiro do método que iniciou a chamada utilizei a unit <a target="_blank" href="https://github.com/project-jedi/jcl/blob/master/jcl/source/windows/JclDebug.pas">JclDebug.pas</a> do projeto Jedi Jcl. Para win32 foi possível extrair o básico necessário e colocar na unit <a target="_blank" href="https://github.com/cesarliws/foundation-4-delphi/blob/master/Experimental/Foundation.Vendor.JclDebug.pas">Foundation.Vendor.JclDebug.pas</a>, com os devidos créditos e licença, dispensando a necessidade de instalar a Jcl completa no ambiente de testes. Para win64 é necessário utilizar a unit JclDebug, também recomendada para ambiente de produção.</p>
+
+<p>A vantagem é clara, apenas uma instância de Defer é criada para cada método de origem, mas por outro lado a sobrecarga gerada da implementação da lista em TDictionary, o mutex necessário para garantir o bom comportamento em multi thread e a dependência da Jcl são maiores do que declarar uma variável ou ter mais de uma instância por método de origem. Tendo em mente que em um comportamento padrão de uma aplicação normal, não haverá muitas instâncias ao mesmo tempo.</p>
 
 <h3 id="mais-exemplos">Mais exemplos</h3>
 
@@ -264,9 +277,9 @@ Defer(
 );
 </pre> 
 
-<h4 id="e-em-records-que-foi-o-me-levou-a-implementar-o-defer">E em records, que foi o me levou a implementar o Defer</h4>
+<h4 id="defer-como-destructor-para-o-record">Defer como destructor para o record</h4>
 
-<p><pre>
+<pre>
 type
   TValueType<T> = record
   private
@@ -275,15 +288,14 @@ type
     FValue: T;
   public
     constructor Create(Value: T);
-  end;<br />
+  end;  
 constructor TValueType<T>.Create(Value: T);
 begin
   FValue := Value;
   FAnyObject := TAnyObject.Create
   FDeferrer := Defer(FAnyObject.Free);
 end;
-</pre>
-Neste caso o Defer funciona como um destructor para o record.</p>
+</pre> 
 
 <h2 id="vantagens">Vantagens</h2>
 
@@ -307,7 +319,7 @@ serão executados.</p></li>
 <h2 id="ressalvas">Ressalvas</h2>
 
 <ul>
-<li><p>O defer adiciona um pequeno overhead, pois um objeto é criado e a sua finalização irá acumular a execução das procedures, código que seria executado de qualquer forma. Mas eu considero que se não se tratar de um código de alta performance, a utilização traz mais vantagens que desvantagens.</p></li>
+<li><p>O defer adiciona uma pequena sobrecarga, pois um objeto é criado e a sua finalização irá acumular a execução das procedures, código que seria executado de qualquer forma. Mas eu considero que se não se tratar de um código de alta performance, a utilização traz mais vantagens que desvantagens.</p></li>
 
 <li><p>Evite usar defer dentro de loops, se for necessário alocar e desalocar recursos dentro de um loop, a desalocação deve ser deterministica. O uso excessivo pode aumentar muito o consumo de memória e causar lentidão.</p></li>
 
