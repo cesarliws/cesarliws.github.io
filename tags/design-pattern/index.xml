@@ -33,7 +33,7 @@
 
 &lt;p&gt;Na semana passada eu estava refatorando um código do framework &amp;ldquo;Foundation 4 Delphi&amp;rdquo;, pois precisava extender o TComponent.TRecursiveEnumerator para utilizar em outras classes, era uma implementação antiga e resolvi reescrever com generics e aproveitar a vantagem dos smart records para simplificar a integração com o meu TComponentHelper class helper.&lt;/p&gt;
 
-&lt;p&gt;Na implementação do record, precisei criar um field &amp;ldquo;IInterface&amp;rdquo; apenas para poder simular um destructor no record, foi quando eu pensei como seria bom se tivessemos o &lt;a href=&#34;https://golang.org/doc/effective_go.html#defer&#34;&gt;Defer&lt;/a&gt; do Golang. Quando estava escrevendo os testes unitários, novamente senti a necessidade do Defer, foi quando decidi pensar mais no padrão e comportamento do Defer, o que me levou a tentar implementar em Delphi, apenas para um exercício de lógica, mesmo inicialmente achando que não seria algo útil para produção, mas para a minha surpresa, consegui algo muito útil.&lt;/p&gt;
+&lt;p&gt;Na implementação do record, precisei criar um field &amp;ldquo;IInterface&amp;rdquo; apenas para poder simular um destructor no record, foi quando eu pensei como seria bom se tivessemos o &lt;a href=&#34;https://golang.org/doc/effective_go.html#defer&#34; target=&#34;_blank&#34;&gt;Defer&lt;/a&gt; do Golang. Quando estava escrevendo os testes unitários, novamente senti a necessidade do Defer, foi quando decidi pensar mais no padrão e comportamento do Defer, o que me levou a tentar implementar em Delphi, apenas para um exercício de lógica, mesmo inicialmente achando que não seria algo útil para produção, mas para a minha surpresa, consegui algo muito útil.&lt;/p&gt;
 
 &lt;h2 id=&#34;o-conceito&#34;&gt;O Conceito&lt;/h2&gt;
 
@@ -41,7 +41,7 @@
 
 &lt;p&gt;No final do método o Defer deve executar todas as procedures empilhadas na ordem inversa ao agendamento.&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&#34;https://golang.org/doc/effective_go.html#defer&#34;&gt;Defer de acordo com a documentação da Golang&lt;/a&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://golang.org/doc/effective_go.html#defer&#34; target=&#34;_blank&#34;&gt;Defer de acordo com a documentação da Golang&lt;/a&gt;:&lt;/p&gt;
 
 &lt;blockquote&gt;
 &lt;p&gt;A declaração defer agenda a chamada da função (a função adiada) para ser executada imediatamente antes da função executando o defer retornar. É uma maneira incomum, mas eficiente de lidar com situações em que recursos devem ser liberados independentes do fluxo que a função executar até retornar. Os exemplos regulares são desbloquear um mutex ou fechar um arquivo.&lt;/p&gt;
@@ -54,7 +54,7 @@
 &lt;p&gt;Nas minhas pesquisas, descobri que o Defer foi implementado para Swift da Apple, na versão 2.0. Gostei do título deste artigo, try/finally feito corretamente.:&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.hackingwithswift.com/new-syntax-swift-2-defer&#34;&gt;The defer keyword in Swift 2: try/finally done right&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.hackingwithswift.com/new-syntax-swift-2-defer&#34; target=&#34;_blank&#34;&gt;The defer keyword in Swift 2: try/finally done right&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;Também li em uma discussão no reddit que este recurso existe na linguagem D, mas não encontrei referências.&lt;/p&gt;
@@ -159,11 +159,11 @@ end;
 
 &lt;h3 id=&#34;uma-implementação-alternativa&#34;&gt;Uma implementação alternativa&lt;/h3&gt;
 
-&lt;p&gt;Na pasta Experimental do repositório tem uma implementação alternativa que extende o Defer na unit &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/cesarliws/foundation-4-delphi/blob/master/Experimental/Foundation.Pattern.Defer.Auto.pas&#34;&gt;Foundation.Pattern.Defer.Auto.pas&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Na pasta Experimental do repositório tem uma implementação alternativa que extende o Defer na unit &lt;a href=&#34;https://github.com/cesarliws/foundation-4-delphi/blob/master/Experimental/Foundation.Pattern.Defer.Auto.pas&#34; target=&#34;_blank&#34;&gt;Foundation.Pattern.Defer.Auto.pas&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;Esta implementação captura a Thread e o ponteiro do método que chamou o Defer e as utiliza como chave para salvar a instância do Defer em um TDictionary&amp;lt;string, IDeferrer&amp;gt; para reutilizar sempre a mesma instância. Funcionou em todos os testes executados em win32, win64, single e multi thread.&lt;/p&gt;
 
-&lt;p&gt;Para capturar o ponteiro do método que iniciou a chamada utilizei a unit &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/project-jedi/jcl/blob/master/jcl/source/windows/JclDebug.pas&#34;&gt;JclDebug.pas&lt;/a&gt; do projeto Jedi Jcl. Para win32 foi possível extrair o básico necessário e colocar na unit &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/cesarliws/foundation-4-delphi/blob/master/Experimental/Foundation.Vendor.JclDebug.pas&#34;&gt;Foundation.Vendor.JclDebug.pas&lt;/a&gt;, com os devidos créditos e licença, dispensando a necessidade de instalar a Jcl completa no ambiente de testes. Para win64 é necessário utilizar a unit JclDebug, também recomendada para ambiente de produção.&lt;/p&gt;
+&lt;p&gt;Para capturar o ponteiro do método que iniciou a chamada utilizei a unit &lt;a href=&#34;https://github.com/project-jedi/jcl/blob/master/jcl/source/windows/JclDebug.pas&#34; target=&#34;_blank&#34;&gt;JclDebug.pas&lt;/a&gt; do projeto Jedi Jcl. Para win32 foi possível extrair o básico necessário e colocar na unit &lt;a href=&#34;https://github.com/cesarliws/foundation-4-delphi/blob/master/Experimental/Foundation.Vendor.JclDebug.pas&#34; target=&#34;_blank&#34;&gt;Foundation.Vendor.JclDebug.pas&lt;/a&gt;, com os devidos créditos e licença, dispensando a necessidade de instalar a Jcl completa no ambiente de testes. Para win64 é necessário utilizar a unit JclDebug, também recomendada para ambiente de produção.&lt;/p&gt;
 
 &lt;p&gt;A vantagem é clara, apenas uma instância de Defer é criada para cada método de origem, mas por outro lado a sobrecarga gerada da implementação da lista em TDictionary, o mutex necessário para garantir o bom comportamento em multi thread e a dependência da Jcl são maiores do que declarar uma variável ou ter mais de uma instância por método de origem. Tendo em mente que em um comportamento padrão de uma aplicação normal, não haverá muitas instâncias ao mesmo tempo.&lt;/p&gt;
 
@@ -289,7 +289,7 @@ aos padrões &amp;ldquo;Deferred/Promise&amp;rdquo; e &amp;ldquo;Deferred Choice
 &lt;h2 id=&#34;repositório&#34;&gt;Repositório&lt;/h2&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://github.com/cesarliws/foundation-4-delphi&#34;&gt;Foundation 4 Delphi&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/cesarliws/foundation-4-delphi&#34; target=&#34;_blank&#34;&gt;Foundation 4 Delphi&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;O projeto está hospedado no github, eu farei outro post apenas para falar do framework e do que estou preparando para ele. Muita coisa está pronta e em produção, então aguardem notícias em breve.&lt;/p&gt;

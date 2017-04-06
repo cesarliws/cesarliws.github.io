@@ -79,7 +79,7 @@
 
 <p>Na semana passada eu estava refatorando um código do framework &ldquo;Foundation 4 Delphi&rdquo;, pois precisava extender o TComponent.TRecursiveEnumerator para utilizar em outras classes, era uma implementação antiga e resolvi reescrever com generics e aproveitar a vantagem dos smart records para simplificar a integração com o meu TComponentHelper class helper.</p>
 
-<p>Na implementação do record, precisei criar um field &ldquo;IInterface&rdquo; apenas para poder simular um destructor no record, foi quando eu pensei como seria bom se tivessemos o <a href="https://golang.org/doc/effective_go.html#defer">Defer</a> do Golang. Quando estava escrevendo os testes unitários, novamente senti a necessidade do Defer, foi quando decidi pensar mais no padrão e comportamento do Defer, o que me levou a tentar implementar em Delphi, apenas para um exercício de lógica, mesmo inicialmente achando que não seria algo útil para produção, mas para a minha surpresa, consegui algo muito útil.</p>
+<p>Na implementação do record, precisei criar um field &ldquo;IInterface&rdquo; apenas para poder simular um destructor no record, foi quando eu pensei como seria bom se tivessemos o <a href="https://golang.org/doc/effective_go.html#defer" target="_blank">Defer</a> do Golang. Quando estava escrevendo os testes unitários, novamente senti a necessidade do Defer, foi quando decidi pensar mais no padrão e comportamento do Defer, o que me levou a tentar implementar em Delphi, apenas para um exercício de lógica, mesmo inicialmente achando que não seria algo útil para produção, mas para a minha surpresa, consegui algo muito útil.</p>
 
 <h2 id="o-conceito">O Conceito</h2>
 
@@ -87,7 +87,7 @@
 
 <p>No final do método o Defer deve executar todas as procedures empilhadas na ordem inversa ao agendamento.</p>
 
-<p><a href="https://golang.org/doc/effective_go.html#defer">Defer de acordo com a documentação da Golang</a>:</p>
+<p><a href="https://golang.org/doc/effective_go.html#defer" target="_blank">Defer de acordo com a documentação da Golang</a>:</p>
 
 <blockquote>
 <p>A declaração defer agenda a chamada da função (a função adiada) para ser executada imediatamente antes da função executando o defer retornar. É uma maneira incomum, mas eficiente de lidar com situações em que recursos devem ser liberados independentes do fluxo que a função executar até retornar. Os exemplos regulares são desbloquear um mutex ou fechar um arquivo.</p>
@@ -100,7 +100,7 @@
 <p>Nas minhas pesquisas, descobri que o Defer foi implementado para Swift da Apple, na versão 2.0. Gostei do título deste artigo, try/finally feito corretamente.:</p>
 
 <ul>
-<li><a href="https://www.hackingwithswift.com/new-syntax-swift-2-defer">The defer keyword in Swift 2: try/finally done right</a></li>
+<li><a href="https://www.hackingwithswift.com/new-syntax-swift-2-defer" target="_blank">The defer keyword in Swift 2: try/finally done right</a></li>
 </ul>
 
 <p>Também li em uma discussão no reddit que este recurso existe na linguagem D, mas não encontrei referências.</p>
@@ -205,11 +205,11 @@ end;
 
 <h3 id="uma-implementação-alternativa">Uma implementação alternativa</h3>
 
-<p>Na pasta Experimental do repositório tem uma implementação alternativa que extende o Defer na unit <a target="_blank" href="https://github.com/cesarliws/foundation-4-delphi/blob/master/Experimental/Foundation.Pattern.Defer.Auto.pas">Foundation.Pattern.Defer.Auto.pas</a>.</p>
+<p>Na pasta Experimental do repositório tem uma implementação alternativa que extende o Defer na unit <a href="https://github.com/cesarliws/foundation-4-delphi/blob/master/Experimental/Foundation.Pattern.Defer.Auto.pas" target="_blank">Foundation.Pattern.Defer.Auto.pas</a>.</p>
 
 <p>Esta implementação captura a Thread e o ponteiro do método que chamou o Defer e as utiliza como chave para salvar a instância do Defer em um TDictionary&lt;string, IDeferrer&gt; para reutilizar sempre a mesma instância. Funcionou em todos os testes executados em win32, win64, single e multi thread.</p>
 
-<p>Para capturar o ponteiro do método que iniciou a chamada utilizei a unit <a target="_blank" href="https://github.com/project-jedi/jcl/blob/master/jcl/source/windows/JclDebug.pas">JclDebug.pas</a> do projeto Jedi Jcl. Para win32 foi possível extrair o básico necessário e colocar na unit <a target="_blank" href="https://github.com/cesarliws/foundation-4-delphi/blob/master/Experimental/Foundation.Vendor.JclDebug.pas">Foundation.Vendor.JclDebug.pas</a>, com os devidos créditos e licença, dispensando a necessidade de instalar a Jcl completa no ambiente de testes. Para win64 é necessário utilizar a unit JclDebug, também recomendada para ambiente de produção.</p>
+<p>Para capturar o ponteiro do método que iniciou a chamada utilizei a unit <a href="https://github.com/project-jedi/jcl/blob/master/jcl/source/windows/JclDebug.pas" target="_blank">JclDebug.pas</a> do projeto Jedi Jcl. Para win32 foi possível extrair o básico necessário e colocar na unit <a href="https://github.com/cesarliws/foundation-4-delphi/blob/master/Experimental/Foundation.Vendor.JclDebug.pas" target="_blank">Foundation.Vendor.JclDebug.pas</a>, com os devidos créditos e licença, dispensando a necessidade de instalar a Jcl completa no ambiente de testes. Para win64 é necessário utilizar a unit JclDebug, também recomendada para ambiente de produção.</p>
 
 <p>A vantagem é clara, apenas uma instância de Defer é criada para cada método de origem, mas por outro lado a sobrecarga gerada da implementação da lista em TDictionary, o mutex necessário para garantir o bom comportamento em multi thread e a dependência da Jcl são maiores do que declarar uma variável ou ter mais de uma instância por método de origem. Tendo em mente que em um comportamento padrão de uma aplicação normal, não haverá muitas instâncias ao mesmo tempo.</p>
 
@@ -335,7 +335,7 @@ aos padrões &ldquo;Deferred/Promise&rdquo; e &ldquo;Deferred Choice&rdquo;.</p>
 <h2 id="repositório">Repositório</h2>
 
 <ul>
-<li><a href="https://github.com/cesarliws/foundation-4-delphi">Foundation 4 Delphi</a></li>
+<li><a href="https://github.com/cesarliws/foundation-4-delphi" target="_blank">Foundation 4 Delphi</a></li>
 </ul>
 
 <p>O projeto está hospedado no github, eu farei outro post apenas para falar do framework e do que estou preparando para ele. Muita coisa está pronta e em produção, então aguardem notícias em breve.</p>
