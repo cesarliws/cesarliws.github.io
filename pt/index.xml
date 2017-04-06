@@ -20,6 +20,8 @@
         <guid>https://cesarliws.github.io/pt/posts/delphi-defer/</guid>
         <description>
 
+&lt;h1 id=&#34;draft&#34;&gt;Draft&lt;/h1&gt;
+
 &lt;h2 id=&#34;origem&#34;&gt;Origem&lt;/h2&gt;
 
 &lt;p&gt;Na semana passada eu estava refatorando um código do framework &amp;ldquo;Foundation 4 Delphi&amp;rdquo;, pois precisava extender o TComponent.TRecursiveEnumerator para utilizar em outras classes, era uma implementação antiga e resolvi reescrever com generics e aproveitar a vantagem dos smart records para simplificar a integração com o meu TComponentHelper class helper.&lt;/p&gt;
@@ -113,8 +115,6 @@ procedure.&lt;/p&gt;
 
 &lt;p&gt;Esta padrão é baseado na function Defer em #Golang e não tem relação
 aos padrões &amp;ldquo;Deferred/Promise&amp;rdquo; e &amp;ldquo;Deferred Choice&amp;rdquo;.&lt;/p&gt;
-
-&lt;p&gt;{{ partial &amp;ldquo;disqus.html&amp;rdquo; . }}&lt;/p&gt;
 </description>
       </item>
       
