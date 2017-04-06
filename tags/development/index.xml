@@ -49,11 +49,10 @@
 &lt;p&gt;Outros exemplos:&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;Fechar conexão com banco de dados&lt;/li&gt;
-&lt;li&gt;Finalizar Transação com banco de dados&lt;/li&gt;
+&lt;li&gt;Fechar conexão, transação ou query&lt;/li&gt;
 &lt;li&gt;Finalizar conexão de socket&lt;/li&gt;
-&lt;li&gt;Fechars arquivos&lt;/li&gt;
-&lt;li&gt;Desbloquear um Critical Section&lt;/li&gt;
+&lt;li&gt;Fechar arquivos abertos&lt;/li&gt;
+&lt;li&gt;Desbloquear critical section&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h2 id=&#34;a-implementação&#34;&gt;A Implementação&lt;/h2&gt;
@@ -66,7 +65,7 @@
 &lt;/pre&gt;
 Seguindo o padrão adotado em Golang para nomear Interface, adicionei o sufixo &amp;ldquo;er&amp;rdquo; e fiz o ajuste para ficar de acordo gramaticalmente.&lt;/p&gt;
 
-&lt;p&gt;Internamente, ele deve manter uma pilha com a lista de TProc agendadas, assim estes métodos podem ser executados em ordem inversa quando o objeto TDefer for destruído, sem problemas pois Delphi tem uma implementação de TStack&lt;T&gt; em System.Generics.Collections, mas aqui teve um truque, pois na hora de tirar o TProc da pilha, estava tendo alguns problemas que resolvi decorando o TProc com um record antes de armazenar.
+&lt;p&gt;Internamente, ele deve manter uma pilha com a lista de TProc agendadas, assim estes métodos podem ser executados em ordem inversa quando o objeto TDefer for destruído, sem problemas pois Delphi tem uma implementação de TStack&amp;lt; T &amp;gt; em System.Generics.Collections, mas aqui teve um truque, pois na hora de tirar o TProc da pilha, estava tendo alguns problemas que resolvi decorando o TProc com um record TStackItem antes de armazenar.
 &lt;pre&gt;
   TDeferrer = class(TInterfacedObject, IDeferrer)
   strict private
@@ -75,7 +74,7 @@ Seguindo o padrão adotado em Golang para nomear Interface, adicionei o sufixo &
         Proc: TProc;
       end;
   strict private
-    FStack: TStack&lt;TStackItem&gt;;
+    FStack: TStack&amp;lt; TStackItem &amp;gt;;
     procedure Push(Proc: TProc);
     procedure ProcessStack;
   public
@@ -127,14 +126,6 @@ end;
   TTransaction.Query
   TQuery.Create
   TQuery.Open(select value from table) = True
-  TQuery.RecordCount = 2
-  TQuery.EOF = False
-  TQuery.Value = 0
-  TQuery.Next = True
-  TQuery.EOF = False
-  TQuery.Value = 1
-  TQuery.Next = True
-  TQuery.EOF = True
 // Defer inicia aqui
   TQuery.Close
   TQuery.Free
@@ -144,17 +135,17 @@ end;
   TDatabase.Free
 &lt;/pre&gt;&lt;/p&gt;
 
-&lt;p&gt;Note que o Defer acontece apenas depois de TQuery.EOF, exatamente na ordem inversa em que os métodos foram agendados no Defer.&lt;/p&gt;
+&lt;p&gt;Note que o Defer acontece apenas depois de TQuery.Open, exatamente na ordem inversa em que os métodos foram agendados no Defer.&lt;/p&gt;
 
 &lt;p&gt;Outro detalhe é que eu declarei uma variável &amp;ldquo;Exec: IDeferrer&amp;rdquo;, para reutilizar a mesma instância do Defer, é mais eficiente, mas não é necessário. Se não declarar a variável a cada chamada terá uma nova instância, minha preocupação era a ordem que as instãncias seriam destruídas seria a mesma do único Defer executando os métodos, em todos os testes que eu executei no Win32 e Win64 foi consistente, mas não encontrei nenhuma informação sobre a ordem em que as IInterfaces são desalocadas, se alguém tiver alguma referência por favor me envie, seria bom confirmar.&lt;/p&gt;
 
-&lt;p&gt;Para deixar os testes mais interessantes, fiz uma outra implementação experimental, em que eu captura a Thread e o endereço de memória do método que chamou o Defer, e utilizo como chave para salvar a instância do Defer em um TDictionary&amp;lt;&amp;gt;, para poder reutilizar sempre a mesma instância. Funcionou perfeitamente, testes executados em Win32, Win64 e também chamando de várias Threads. Este código vai ficar na pasta Experimental e provavelmente não vou utilizar em produção, pra Win32 eu extraí um método da JclDebug, que não funcionou em Win64, para este é necessário utilizar a JclDebug completa.&lt;/p&gt;
+&lt;p&gt;Para deixar os testes mais interessantes, fiz uma outra implementação experimental, em que eu captura a Thread e o endereço de memória do método que chamou o Defer, e utilizo como chave para salvar a instância do Defer em um TDictionary&amp;lt; Key, Deferrer &amp;gt;, para poder reutilizar sempre a mesma instância. Funcionou perfeitamente, testes executados em Win32, Win64 e também chamando de várias Threads. Este código vai ficar na pasta Experimental e provavelmente não vou utilizar em produção, pra Win32 eu extraí um método da JclDebug, que não funcionou em Win64, para este é necessário utilizar a JclDebug completa.&lt;/p&gt;
 
 &lt;p&gt;Não acredito que valha a pena utilizar esta versão, pois todo o código adicional e a dependência já ficariam maiores que o overhead das multiplas instâncias, lembrando nunca teremos muitas instâncias em memória ao mesmo tempo, mais sobre isso a seguir.&lt;/p&gt;
 
 &lt;h3 id=&#34;mais-exemplos&#34;&gt;Mais exemplos&lt;/h3&gt;
 
-&lt;h4 id=&#34;métodos-anonimos&#34;&gt;Métodos Anonimos&lt;/h4&gt;
+&lt;h4 id=&#34;métodos-anônimos&#34;&gt;Métodos Anônimos&lt;/h4&gt;
 
 &lt;pre&gt;
   Database := TDatabase.Create(FWriter);
@@ -247,18 +238,14 @@ serão executados.&lt;/p&gt;&lt;/li&gt;
 
 &lt;li&gt;&lt;p&gt;Evite usar defer dentro de loops, se for necessário alocar e desalocar recursos dentro de um loop, a desalocação deve ser deterministica. O uso excessivo pode aumentar muito o consumo de memória e causar lentidão.&lt;/p&gt;&lt;/li&gt;
 
-&lt;li&gt;&lt;p&gt;Ao usar com métodos anonimos tenha em mente que o estado é capturado,
+&lt;li&gt;&lt;p&gt;Ao usar com métodos anônimos tenha em mente que o estado é capturado,
 qualquer variável utilizada, terá o valor capturado no momento em que
 o defer for declarado e não o valor alterado durante o fluxo da
 procedure.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Esta padrão é baseado na function Defer em Golang e não tem relação
+aos padrões &amp;ldquo;Deferred/Promise&amp;rdquo; e &amp;ldquo;Deferred Choice&amp;rdquo;.&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
-&lt;h2 id=&#34;informações-adicionais&#34;&gt;Informações adicionais&lt;/h2&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;Esta padrão é baseado na function Defer em #Golang e não tem relação
-aos padrões &amp;ldquo;Deferred/Promise&amp;rdquo; e &amp;ldquo;Deferred Choice&amp;rdquo;.&lt;/p&gt;
-&lt;/blockquote&gt;
 
 &lt;h2 id=&#34;repositório&#34;&gt;Repositório&lt;/h2&gt;
 
@@ -266,7 +253,7 @@ aos padrões &amp;ldquo;Deferred/Promise&amp;rdquo; e &amp;ldquo;Deferred Choice
 &lt;li&gt;&lt;a href=&#34;https://github.com/cesarliws/foundation-4-delphi&#34;&gt;Foundation 4 Delphi&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;O projeto está hospedado no github, eu farei outro post apenas para falar do framework e do que estou preparando para ele. Muita coisa está pronto e em produção, então tentarei enviar código semanalmente.&lt;/p&gt;
+&lt;p&gt;O projeto está hospedado no github, eu farei outro post apenas para falar do framework e do que estou preparando para ele. Muita coisa está pronta e em produção, então aguardem notícias em breve.&lt;/p&gt;
 </description>
       </item>
       

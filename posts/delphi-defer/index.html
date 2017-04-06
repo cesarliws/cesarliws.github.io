@@ -95,11 +95,10 @@
 <p>Outros exemplos:</p>
 
 <ul>
-<li>Fechar conexão com banco de dados</li>
-<li>Finalizar Transação com banco de dados</li>
+<li>Fechar conexão, transação ou query</li>
 <li>Finalizar conexão de socket</li>
-<li>Fechars arquivos</li>
-<li>Desbloquear um Critical Section</li>
+<li>Fechar arquivos abertos</li>
+<li>Desbloquear critical section</li>
 </ul>
 
 <h2 id="a-implementação">A Implementação</h2>
@@ -112,7 +111,7 @@
 </pre>
 Seguindo o padrão adotado em Golang para nomear Interface, adicionei o sufixo &ldquo;er&rdquo; e fiz o ajuste para ficar de acordo gramaticalmente.</p>
 
-<p>Internamente, ele deve manter uma pilha com a lista de TProc agendadas, assim estes métodos podem ser executados em ordem inversa quando o objeto TDefer for destruído, sem problemas pois Delphi tem uma implementação de TStack<T> em System.Generics.Collections, mas aqui teve um truque, pois na hora de tirar o TProc da pilha, estava tendo alguns problemas que resolvi decorando o TProc com um record antes de armazenar.
+<p>Internamente, ele deve manter uma pilha com a lista de TProc agendadas, assim estes métodos podem ser executados em ordem inversa quando o objeto TDefer for destruído, sem problemas pois Delphi tem uma implementação de TStack&lt; T &gt; em System.Generics.Collections, mas aqui teve um truque, pois na hora de tirar o TProc da pilha, estava tendo alguns problemas que resolvi decorando o TProc com um record TStackItem antes de armazenar.
 <pre>
   TDeferrer = class(TInterfacedObject, IDeferrer)
   strict private
@@ -121,7 +120,7 @@ Seguindo o padrão adotado em Golang para nomear Interface, adicionei o sufixo &
         Proc: TProc;
       end;
   strict private
-    FStack: TStack<TStackItem>;
+    FStack: TStack&lt; TStackItem &gt;;
     procedure Push(Proc: TProc);
     procedure ProcessStack;
   public
@@ -173,14 +172,6 @@ end;
   TTransaction.Query
   TQuery.Create
   TQuery.Open(select value from table) = True
-  TQuery.RecordCount = 2
-  TQuery.EOF = False
-  TQuery.Value = 0
-  TQuery.Next = True
-  TQuery.EOF = False
-  TQuery.Value = 1
-  TQuery.Next = True
-  TQuery.EOF = True
 // Defer inicia aqui
   TQuery.Close
   TQuery.Free
@@ -190,17 +181,17 @@ end;
   TDatabase.Free
 </pre></p>
 
-<p>Note que o Defer acontece apenas depois de TQuery.EOF, exatamente na ordem inversa em que os métodos foram agendados no Defer.</p>
+<p>Note que o Defer acontece apenas depois de TQuery.Open, exatamente na ordem inversa em que os métodos foram agendados no Defer.</p>
 
 <p>Outro detalhe é que eu declarei uma variável &ldquo;Exec: IDeferrer&rdquo;, para reutilizar a mesma instância do Defer, é mais eficiente, mas não é necessário. Se não declarar a variável a cada chamada terá uma nova instância, minha preocupação era a ordem que as instãncias seriam destruídas seria a mesma do único Defer executando os métodos, em todos os testes que eu executei no Win32 e Win64 foi consistente, mas não encontrei nenhuma informação sobre a ordem em que as IInterfaces são desalocadas, se alguém tiver alguma referência por favor me envie, seria bom confirmar.</p>
 
-<p>Para deixar os testes mais interessantes, fiz uma outra implementação experimental, em que eu captura a Thread e o endereço de memória do método que chamou o Defer, e utilizo como chave para salvar a instância do Defer em um TDictionary&lt;&gt;, para poder reutilizar sempre a mesma instância. Funcionou perfeitamente, testes executados em Win32, Win64 e também chamando de várias Threads. Este código vai ficar na pasta Experimental e provavelmente não vou utilizar em produção, pra Win32 eu extraí um método da JclDebug, que não funcionou em Win64, para este é necessário utilizar a JclDebug completa.</p>
+<p>Para deixar os testes mais interessantes, fiz uma outra implementação experimental, em que eu captura a Thread e o endereço de memória do método que chamou o Defer, e utilizo como chave para salvar a instância do Defer em um TDictionary&lt; Key, Deferrer &gt;, para poder reutilizar sempre a mesma instância. Funcionou perfeitamente, testes executados em Win32, Win64 e também chamando de várias Threads. Este código vai ficar na pasta Experimental e provavelmente não vou utilizar em produção, pra Win32 eu extraí um método da JclDebug, que não funcionou em Win64, para este é necessário utilizar a JclDebug completa.</p>
 
 <p>Não acredito que valha a pena utilizar esta versão, pois todo o código adicional e a dependência já ficariam maiores que o overhead das multiplas instâncias, lembrando nunca teremos muitas instâncias em memória ao mesmo tempo, mais sobre isso a seguir.</p>
 
 <h3 id="mais-exemplos">Mais exemplos</h3>
 
-<h4 id="métodos-anonimos">Métodos Anonimos</h4>
+<h4 id="métodos-anônimos">Métodos Anônimos</h4>
 
 <pre>
   Database := TDatabase.Create(FWriter);
@@ -293,18 +284,14 @@ serão executados.</p></li>
 
 <li><p>Evite usar defer dentro de loops, se for necessário alocar e desalocar recursos dentro de um loop, a desalocação deve ser deterministica. O uso excessivo pode aumentar muito o consumo de memória e causar lentidão.</p></li>
 
-<li><p>Ao usar com métodos anonimos tenha em mente que o estado é capturado,
+<li><p>Ao usar com métodos anônimos tenha em mente que o estado é capturado,
 qualquer variável utilizada, terá o valor capturado no momento em que
 o defer for declarado e não o valor alterado durante o fluxo da
 procedure.</p></li>
+
+<li><p>Esta padrão é baseado na function Defer em Golang e não tem relação
+aos padrões &ldquo;Deferred/Promise&rdquo; e &ldquo;Deferred Choice&rdquo;.</p></li>
 </ul>
-
-<h2 id="informações-adicionais">Informações adicionais</h2>
-
-<blockquote>
-<p>Esta padrão é baseado na function Defer em #Golang e não tem relação
-aos padrões &ldquo;Deferred/Promise&rdquo; e &ldquo;Deferred Choice&rdquo;.</p>
-</blockquote>
 
 <h2 id="repositório">Repositório</h2>
 
@@ -312,7 +299,7 @@ aos padrões &ldquo;Deferred/Promise&rdquo; e &ldquo;Deferred Choice&rdquo;.</p>
 <li><a href="https://github.com/cesarliws/foundation-4-delphi">Foundation 4 Delphi</a></li>
 </ul>
 
-<p>O projeto está hospedado no github, eu farei outro post apenas para falar do framework e do que estou preparando para ele. Muita coisa está pronto e em produção, então tentarei enviar código semanalmente.</p>
+<p>O projeto está hospedado no github, eu farei outro post apenas para falar do framework e do que estou preparando para ele. Muita coisa está pronta e em produção, então aguardem notícias em breve.</p>
 
       </p>
     </article>
