@@ -8,56 +8,8 @@
     <generator>Hugo -- gohugo.io</generator>
     
     <copyright>Everything is mine</copyright>
-    <lastBuildDate>Wed, 05 Apr 2017 17:02:27 -0300</lastBuildDate>
-    <atom:link href="/en/index.xml" rel="self" type="application/rss+xml" />
     
-      
-      <item>
-        <title>Delphi Defer</title>
-        <link>https://cesarliws.github.io/en/posts/delphi-defer/</link>
-        <pubDate>Wed, 05 Apr 2017 17:02:27 -0300</pubDate>
-        <author> (Cesar Romero)</author>
-        <guid>https://cesarliws.github.io/en/posts/delphi-defer/</guid>
-        <description>&lt;p&gt;IDeferrer define o padrão &amp;ldquo;defer execute procedure&amp;rdquo;, que deve agendar a
-procedure TProc para ser executada imediatamente após o fim do método que
-fez a chamada ao Defer(Proc).&lt;/p&gt;
-
-&lt;p&gt;Adiar a execução de procedures tem algumas vantagens:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;Garante que você não vai esquecer de finalizar/fechar um recurso,
-um erro bem comum quando é feito a manutenção do código e novas condições
-são adicionadas, criando um novo caminho para o fluxo da procedure;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;O código de finalização fica junto ao de inicialização, que é
-mais legível do que colocar no fim do método;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Dispensa a necessidade de blocos try/finally para garantir que um
-recurso seja finalizado.&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Mesmo que ocorra uma Exception, todos os métodos agendados no defer
-serão executados.&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Exemplos da sua utilização são desbloquear um CriticalSection, fechar um
-arquivo ou fechar uma conexão com o banco de dados.&lt;/p&gt;
-
-&lt;p&gt;Evite usar defer dentro de loops, isso pode causar um aumento excessivo
-de memória se muitos objetos forem alocados, podendo ocasionar o erro
-&amp;ldquo;Out of memory&amp;rdquo;.&lt;/p&gt;
-
-&lt;p&gt;Ao usar com métodos anonimos tenha em mente que o estado é capturado,
-qualquer variável utilizada, terá o valor capturado no momento em que
-o defer for declarado e não o valor alterado durante o fluxo da
-procedure.&lt;/p&gt;
-
-&lt;p&gt;Esta padrão é baseado na function Defer em #Golang e não tem relação
-aos padrões &amp;ldquo;Deferred/Promise&amp;rdquo; e &amp;ldquo;Deferred Choice&amp;rdquo;.&lt;/p&gt;
-
-&lt;p&gt;{{ partial &amp;ldquo;disqus.html&amp;rdquo; . }}&lt;/p&gt;
-</description>
-      </item>
-      
+    <atom:link href="/en/index.xml" rel="self" type="application/rss+xml" />
     
   </channel>
 </rss>

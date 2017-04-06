@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Cesar Romero">
+    <meta name="description" content="">
+    <meta name="generator" content="Hugo 0.19" />
+
+    
+    <title>Delphi Defer &middot; @cesarliws’s cook bytes</title>
+
+    <link rel="stylesheet" href="https://cesarliws.github.io/css/weblog.css" media="screen" charset="utf-8" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.2.14/css/lightgallery.min.css" type="text/css" />
+    
+
+
+    
+	<link href="https://cesarliws.github.io/index.xml" rel="alternate" type="application/rss+xml" title="cook bytes" />
+	
+  </head>
+  <body class="site">
+
+<header>
+  <nav>
+    <h1><a href="/">@cesarliws</a>’s cook bytes.</h1>
+    <div class="menu">
+      
+      <ul>
+        
+            <li>
+              <a href="/">Home</a>
+              
+                <a href="/index.xml"><img src="/img/rss.svg" class="rss-icon" /></a>
+              
+            </li>
+        
+            <li>
+              <a href="/posts/">Posts</a>
+              
+                <a href="/posts/index.xml"><img src="/img/rss.svg" class="rss-icon" /></a>
+              
+            </li>
+        
+            <li>
+              <a href="/en/">English</a>
+              
+                <a href="/en/index.xml"><img src="/img/rss.svg" class="rss-icon" /></a>
+              
+            </li>
+        
+        
+      </ul>
+    </div>
+  </nav>
+</header>
+
+
+  <main class="content">
+
+    <article class="post">
+      
+        <h2><a rel="full-article" href="https://cesarliws.github.io/pt/posts/delphi-defer/">Delphi Defer</a></h2>
+      
+
+      <div class="postmeta">Posted on <time datetime="2017-04-05 17:02:27 -0300 BRT" pubdate="">April 5, 2017</time> in
+        <span class="categories">
+          
+        </span>
+      </div>
+
+      <p>
+        
+
+<h2 id="origem">Origem</h2>
+
+<p>Na semana passada eu estava refatorando um código do framework &ldquo;Foundation 4 Delphi&rdquo;, pois precisava extender o TComponent.TRecursiveEnumerator para utilizar em outras classes, era uma implementação antiga e resolvi reescrever com generics e aproveitar a vantagem dos smart records para simplificar a integração com o meu TComponentHelper class helper.</p>
+
+<p>Na implementação do record, precisei criar um field &ldquo;IInterface&rdquo; simplemente para poder simular um destructor no record, foi quando eu pensei como seria bom se tivessemos o <a href="https://golang.org/doc/effective_go.html#defer">Defer</a> do Golang. Quando estava escrevendo os testes unitários, novamente senti a necessidade do Defer, foi quando decidi pensar mais no padrão e comportamento do Defer, o que me levou a tentar implementar em Delphi, apenas para um exercício de lógica, mesmo inicialmente achando que não seria algo útil para produção, mas para a minha surpresa, consegui algo muito útil.</p>
+
+<h2 id="o-conceito">O Conceito</h2>
+
+<p>Defer define o padrão &ldquo;adiar a execução de uma procedure&rdquo;, este adiamento deve agendar a execução de uma &ldquo;procedure TProc&rdquo; para após o fim do método que executou a chamada ao Defer(Procedure: TProc).</p>
+
+<p>No final do método o Defer deve executar todas as procedures empilhadas na ordem inversa ao agendamento.</p>
+
+<p><a href="https://golang.org/doc/effective_go.html#defer">Defer de acordo com a documentação da Golang</a>:</p>
+
+<blockquote>
+<p>A declaração defer agenda a chamada da função (a função adiada) para ser executada imediatamente antes da função executando o defer retornar. É uma maneira incomum, mas eficiente de lidar com situações em que recursos devem ser liberados independentes do fluxo que a função executar até retornar. Os exemplos regulares são desbloquear um mutex ou fechar um arquivo.</p>
+</blockquote>
+
+<p>Uma informação importante aqui, é que Golang é uma linguagem com garbage collection, então não é necessário destruir os objetos criados, apenas desalocar recursos.</p>
+
+<p>E independente do fluxo executado na função o Defer sempre deve executar os métodos já agendados, então se houver um Exit antes do final ou se ocorrer uma exceção, todos os métodos agendados devem ser executados.</p>
+
+<p>Outros exemplos:</p>
+
+<ul>
+<li>Fechar conexão com banco de dados</li>
+<li>Finalizar Transação com banco de dados</li>
+<li>Finalizar conexão de socket</li>
+<li>Fechars arquivos</li>
+<li>Desbloquear um Critical Section</li>
+</ul>
+
+<h2 id="a-implementação">A Implementação</h2>
+
+<p>Após analisar o comportamento e entender como o Defer dever funcionar, comecei a implementar utilizando Interfaces, assim ela seria automaticamente desalocada quando a Interface sair de contexto, esta foi fácil.</p>
+  IDeferrer = Interface(IInterface)
+    function Defer(Proc: TProc): IDeferrer;
+  end;
+
+<p>Seguindo o padrão adotado em Golang para nomear Interface, adicionei o sufixo &ldquo;er&rdquo; e fiz o ajuste para ficar de acordo gramaticalmente.</p>
+
+<p>Internamente, ele deve manter uma pilha com a lista de TProc agendadas, assim estes métodos podem ser executados em ordem inversa quando o objeto TDefer for destruído, sem problemas pois Delphi tem uma implementação de TStack<T> em System.Generics.Collections, mas aqui teve um truque, pois na hora de tirar o TProc da pilha, estava tendo alguns problemas que resolvi decorando o TProc com um record antes de armazenar.</p>
+  TDeferrer = class(TInterfacedObject, IDeferrer)
+  strict private
+    type
+      TStackItem = record
+        Proc: TProc;
+      end;
+  strict private
+    FStack: TStack<TStackItem>;
+    procedure Push(Proc: TProc);
+    procedure ProcessStack;
+  public
+    constructor Create; overload;
+    constructor Create(Proc: TProc); overload;
+    destructor Destroy; override;
+
+    function Defer(Proc: TProc): IDeferrer;
+  end;
+
+<h2 id="vantagens">Vantagens</h2>
+
+<p>Adiar a execução de procedures tem algumas vantagens:</p>
+
+<ul>
+<li><p>Garante que você não vai esquecer de finalizar/fechar um recurso,
+um erro bem comum quando é feito a manutenção do código e novas condições
+são adicionadas, criando um novo caminho para o fluxo da procedure;</p></li>
+
+<li><p>O código de finalização fica junto ao de inicialização, que é
+mais legível do que colocar no fim do método;</p></li>
+
+<li><p>Dispensa a necessidade de blocos try/finally para garantir que um
+recurso seja finalizado.</p></li>
+
+<li><p>Mesmo que ocorra uma Exception, todos os métodos agendados no defer
+serão executados.</p></li>
+</ul>
+
+<p>Exemplos da sua utilização são desbloquear um CriticalSection, fechar um
+arquivo ou fechar uma conexão com o banco de dados.</p>
+
+<p>Evite usar defer dentro de loops, isso pode causar um aumento excessivo
+de memória se muitos objetos forem alocados, podendo ocasionar o erro
+&ldquo;Out of memory&rdquo;.</p>
+
+<p>Ao usar com métodos anonimos tenha em mente que o estado é capturado,
+qualquer variável utilizada, terá o valor capturado no momento em que
+o defer for declarado e não o valor alterado durante o fluxo da
+procedure.</p>
+
+<p>Esta padrão é baseado na function Defer em #Golang e não tem relação
+aos padrões &ldquo;Deferred/Promise&rdquo; e &ldquo;Deferred Choice&rdquo;.</p>
+
+<p>{{ partial &ldquo;disqus.html&rdquo; . }}</p>
+
+      </p>
+    </article>
+
+
+  </main>
+
+<footer>
+  <div class="footer_text">
+      <div>
+        <h3>Hi, <a href="">I'm Cesar</a></h3>
+        <p>
+          Software Architect at <a href="www.triersistemas.com.br">Trier Sistemas</a>, and
+<br /> <a href="https://www.embarcadero.com/embarcadero-mvp-program">Embarcadero MVP</a>.
+<br /> Regular speaker at software conferences. 
+<br /> [desktop, cloud and mobile in mostly in <a href="https://www.embarcadero.com/products/delphi">Delphi</a> and <a href="https://golang.org/">Golang</a>]
+
+        </p>
+      </div>
+  </div>
+
+  
+    <div class="footer_copyright">
+      &copy; 2017 <a href="">Cesar Romero</a>
+       - Made in Tubarão - SC, Brazil
+    </div>
+  
+</footer>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/2.2.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.2.14/js/lightgallery-all.min.js" charset="utf-8"></script>
+    <script src="/js/weblog.js" charset="utf-8"></script>
+    
+
+    
+    
+  </body>
+</html>
+
