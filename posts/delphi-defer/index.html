@@ -248,6 +248,22 @@ Que gerou o log:
     < Exit DelegateDeferToTraceExecute
 </pre> 
 
+<h4 id="defer-condicional">Defer condicional</h4>
+
+<pre>
+Defer(
+  procedure(
+    if Datatabase.InTransaction then
+    begin
+      if Object.IsValid then
+          Datatabase.Commit
+      else
+          Datatabase.RollBack;
+    end;
+  )
+);
+</pre> 
+
 <h4 id="e-em-records-que-foi-o-me-levou-a-implementar-o-defer">E em records, que foi o me levou a implementar o Defer</h4>
 
 <p><pre>
