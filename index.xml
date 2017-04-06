@@ -46,15 +46,13 @@
 
 &lt;p&gt;E independente do fluxo executado na função o Defer sempre deve executar os métodos já agendados, então se houver um Exit antes do final ou se ocorrer uma exceção, todos os métodos agendados devem ser executados.&lt;/p&gt;
 
-&lt;p&gt;Nas minhas pesquisas, descobri que o Defer foi implementado para Swift da Apple, na versão 2.0:&lt;/p&gt;
+&lt;p&gt;Nas minhas pesquisas, descobri que o Defer foi implementado para Swift da Apple, na versão 2.0. Gostei do título deste artigo, try/finally feito corretamente.:&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://www.hackingwithswift.com/new-syntax-swift-2-defer&#34;&gt;The defer keyword in Swift 2: try/finally done right&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;Gostei do título deste artigo, try/finally feito corretamente.&lt;/p&gt;
-
-&lt;p&gt;Além disso, li em uma discussão no reddit que este recurso existe na linguagem D, mas não encontrei nenhum referencia.&lt;/p&gt;
+&lt;p&gt;Também li em uma discussão no reddit que este recurso existe na linguagem D, mas não encontrei referências.&lt;/p&gt;
 
 &lt;h3 id=&#34;outros-utilidades-para-o-defer&#34;&gt;Outros utilidades para o Defer&lt;/h3&gt;
 
