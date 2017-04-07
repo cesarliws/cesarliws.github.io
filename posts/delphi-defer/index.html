@@ -13,8 +13,7 @@
 
     <link rel="stylesheet" href="https://cesarliws.github.io/css/weblog.css" media="screen" charset="utf-8" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.2.14/css/lightgallery.min.css" type="text/css" />
-    <link href="http://alexgorbatchev.com/pub/sh/current/styles/shThemeDefault.css" rel="stylesheet" type="text/css" />
-
+    
 
     
 	<link href="https://cesarliws.github.io/index.xml" rel="alternate" type="application/rss+xml" title="cooking bytes" />
@@ -118,7 +117,7 @@ Seguindo o padrão adotado em Golang para nomear Interface, adicionei o sufixo &
 
 <p>Internamente, ele deve manter uma pilha com a lista de TProc agendadas, assim estes métodos podem ser executados em ordem inversa quando o objeto TDefer for destruído, sem problemas pois Delphi tem uma implementação de TStack&lt;T&gt; em System.Generics.Collections, mas aqui teve um truque, pois na hora de tirar o TProc da pilha, estava tendo alguns problemas que resolvi decorando o TProc com um record TStackItem antes de armazenar.</p>
 
-<pre class='brush: delphi'>
+<pre>
 type
   TDeferrer = class(TInterfacedObject, IDeferrer)
   strict private
@@ -383,9 +382,7 @@ aos padrões &ldquo;Deferred/Promise&rdquo; e &ldquo;Deferred Choice&rdquo;.</p>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/2.2.0/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.2.14/js/lightgallery-all.min.js" charset="utf-8"></script>
     <script src="/js/weblog.js" charset="utf-8"></script>
-    <script src="http://alexgorbatchev.com/pub/sh/current/scripts/shCore.js" type="text/javascript"></script>
-<script src="http://alexgorbatchev.com/pub/sh/current/scripts/shAutoloader.js" type="text/javascript"></script>]
-<script src="http://agorbatchev.typepad.com/pub/sh/3_0_83/scripts/shBrushDelphi.js" type="text/javascript"></script>]
+    
     
     
 <script>
