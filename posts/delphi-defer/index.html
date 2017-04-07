@@ -65,16 +65,13 @@
       <p>
         
 
-<h2 id="origem">Origem</h2>
-
-<p>Na semana passada eu estava refatorando um código do framework &ldquo;Foundation 4 Delphi&rdquo;, pois precisava extender o TComponent.TRecursiveEnumerator para utilizar em outras classes, era uma implementação antiga e resolvi reescrever com generics e aproveitar a vantagem dos smart records para simplificar a integração com o meu TComponentHelper class helper.</p>
+<p>Semana passada eu estava refatorando um código do framework &ldquo;Foundation 4 Delphi&rdquo;, pois precisava extender o TComponent.TRecursiveEnumerator para utilizar em outras classes, era uma implementação antiga e resolvi reescrever com generics e aproveitar a vantagem dos smart records para simplificar a integração com o meu TComponentHelper class helper.</p>
 
 <p>Na implementação do record, precisei criar um field &ldquo;IInterface&rdquo; apenas para poder simular um destructor no record, foi quando eu pensei como seria bom se tivessemos o <a href="https://golang.org/doc/effective_go.html#defer" target="_blank">Defer</a> do Golang. Quando estava escrevendo os testes unitários, novamente senti a necessidade do Defer, foi quando decidi pensar mais no padrão e comportamento do Defer, o que me levou a tentar implementar em Delphi, apenas para um exercício de lógica, mesmo inicialmente achando que não seria algo útil para produção, mas para a minha surpresa, consegui algo muito útil.</p>
 
-<h2 id="o-conceito">O Conceito</h2>
+<h2 id="o-que-é-defer">O que é Defer?</h2>
 
-<p><img src="/img/postponed.jpg" alt="Postpone image" />
-Defer define o padrão &ldquo;adiar a execução de uma procedure&rdquo;, este adiamento deve agendar a execução de uma &ldquo;procedure TProc&rdquo; para após o fim do método que executou a chamada ao Defer(Procedure: TProc).</p>
+<p><img src="/img/postponed.jpg" alt="Postpone image" /> Defer define o padrão &ldquo;adiar a execução de uma procedure&rdquo;, este adiamento deve agendar a execução de uma &ldquo;procedure: TProc&rdquo; para após o fim do método que executou a chamada à função Defer(Proc: TProc).</p>
 
 <p>No final do método o Defer deve executar todas as procedures empilhadas na ordem inversa ao agendamento.</p>
 
