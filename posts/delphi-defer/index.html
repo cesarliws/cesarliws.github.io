@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Cesar Romero">
     <meta name="description" content="">
-    <meta name="generator" content="Hugo 0.19-DEV" />
+    <meta name="generator" content="Hugo 0.19" />
 
     
     <title>Delphi Defer &middot; @cesarliws’s cooking bytes</title>
@@ -66,15 +66,6 @@
       <p>
         
 
-<h1 id="draft">Draft</h1>
-
-<h3 id="atenção">Atenção</h3>
-
-<ul>
-<li>Este artigo ainda está sendo revisado, pode sofrer alterações.</li>
-<li>A tradução para inglês será disponibilizada em breve.</li>
-</ul>
-
 <h2 id="origem">Origem</h2>
 
 <p>Na semana passada eu estava refatorando um código do framework &ldquo;Foundation 4 Delphi&rdquo;, pois precisava extender o TComponent.TRecursiveEnumerator para utilizar em outras classes, era uma implementação antiga e resolvi reescrever com generics e aproveitar a vantagem dos smart records para simplificar a integração com o meu TComponentHelper class helper.</p>
@@ -83,7 +74,8 @@
 
 <h2 id="o-conceito">O Conceito</h2>
 
-<p>Defer define o padrão &ldquo;adiar a execução de uma procedure&rdquo;, este adiamento deve agendar a execução de uma &ldquo;procedure TProc&rdquo; para após o fim do método que executou a chamada ao Defer(Procedure: TProc).</p>
+<p><img src="/img/postponed.jpg" alt="Postpone image" />
+Defer define o padrão &ldquo;adiar a execução de uma procedure&rdquo;, este adiamento deve agendar a execução de uma &ldquo;procedure TProc&rdquo; para após o fim do método que executou a chamada ao Defer(Procedure: TProc).</p>
 
 <p>No final do método o Defer deve executar todas as procedures empilhadas na ordem inversa ao agendamento.</p>
 
@@ -201,7 +193,7 @@ end;
 
 <p>Outro detalhe é a declaração da variável &ldquo;Exec: IDeferrer&rdquo; para reutilizar a mesma instância. Declarando uma variável e reutilizando nas próximas chamadas somente uma instância é alocada, algo que pode ser dispensado para o benefício de ter o código mais limpo com uma pequena sobrecarga.</p>
 
-<p>Se a referência do IDeferrer não for armazenada em uma variável local, uma nova uma nova instância será criada a cada chamada ao Defer. Seria um problema se a ordem em que as instâncias são desalocadas não fosse a mesma do Defer, mas o comportamento foi consistente em todos os testes. Acredito ser o comportamento padrão do gerenciador de memória do Delphi, o FastMM, armazenar as instâncias alocadas em uma pilha, desta forma a ordem para desalocar é a mesma da implementação do Defer. Se o gerenciador de memória do seu projeto for outro como ScaleMM ou Nexus Memory Manager sugiro fazer testes antes de usar o Defer.</p>
+<p>Se a referência do IDeferrer não for armazenada em uma variável local, uma nova instância será criada a cada chamada ao Defer. Seria um problema se a ordem em que as instâncias são desalocadas não fosse a mesma do Defer, mas o comportamento foi consistente em todos os testes. Acredito ser o comportamento padrão do gerenciador de memória do Delphi, o FastMM, armazenar as instâncias alocadas em uma pilha, desta forma a ordem para desalocar é a mesma da implementação do Defer. Se o gerenciador de memória do seu projeto for outro como ScaleMM ou Nexus Memory Manager sugiro fazer testes antes de usar o Defer.</p>
 
 <h3 id="uma-implementação-alternativa">Uma implementação alternativa</h3>
 
