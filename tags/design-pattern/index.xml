@@ -258,7 +258,7 @@ mais legível do que colocar no fim do método;&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Dispensa a necessidade de blocos try/finally para garantir que um
 recurso seja finalizado.&lt;/p&gt;&lt;/li&gt;
 
-&lt;li&gt;&lt;p&gt;Mesmo que ocorra uma Exception, todos os métodos agendados no Defer
+&lt;li&gt;&lt;p&gt;Mesmo que ocorra uma excessão, todos os métodos agendados no Defer
 serão executados.&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
