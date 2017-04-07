@@ -342,6 +342,10 @@ aos padrões &ldquo;Deferred/Promise&rdquo; e &ldquo;Deferred Choice&rdquo;.</p>
     var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
     var disqus_shortname = 'cesarliws';
     dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    var disqus_config = function () { 
+        
+        this.language = "en_US";
+    };
     (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
 })();
 </script>
