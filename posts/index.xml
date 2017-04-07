@@ -78,7 +78,7 @@ type
         Proc: TProc;
       end;
   strict private
-    FStack: TStack\&lt;TStackItem\&gt;;
+    FStack: TStack&lt; TStackItem &gt;;
     procedure Push(Proc: TProc);
     procedure ProcessStack;
   public
