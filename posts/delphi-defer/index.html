@@ -135,19 +135,19 @@ type
     destructor Destroy; override;
     function Defer(Proc: TProc): IDeferrer;
   end;
-{% endhighlight %}
+</p>
 
-E para finalizar, criei uma função global que retorna o IDeferrer:
+<p>E para finalizar, criei uma função global que retorna o IDeferrer:
 <pre>
 function Defer(Proc: TProc): IDeferrer;
 begin
   Result := TDeferrer.Create(Proc);
 end;
-</pre>
+</pre></p>
 
-## Como usar
+<h2 id="como-usar">Como usar</h2>
 
-O objetivo do Defer é adiar métodos, não gerenciar o tempo de vida de objetos, mas como em Delphi Win32/Win64 os objetos são gerenciados manualmente, podemos utilizar o Defer para destruir os objetos, além de finalizar outros recursos.
+<p>O objetivo do Defer é adiar métodos, não gerenciar o tempo de vida de objetos, mas como em Delphi Win32/Win64 os objetos são gerenciados manualmente, podemos utilizar o Defer para destruir os objetos, além de finalizar outros recursos.
 <pre>
 uses
   Foundation.System;
@@ -159,21 +159,21 @@ var
 begin
   Database := TDatabase.Create(FWriter);
   Exec := Defer(Database.Free);
-  Database.Open('foundation-db');
+  Database.Open(&lsquo;foundation-db&rsquo;);
   Exec.Defer(Database.Close);
   Transaction := Database.StartTransaction;
   Exec.Defer(Transaction.Free);
   Exec.Defer(Transaction.Commit);
   Query := Transaction.Query;
   Exec.Defer(Query.Free);
-  if Query.Open('select value from table') then
+  if Query.Open(&lsquo;select value from table&rsquo;) then
   begin
     Exec.Defer(Query.Close);
   end;
 end;
-</pre> 
+</pre></p>
 
-Este código é parte dos testes unitários que eu escrevi, os objetos são apenas Mock e o FWriter passado no construtor é utilizar para gravar as etapas, para que eu possa testar o resultado, aqui está o resultado do log do defer neste método:
+<p>Este código é parte dos testes unitários que eu escrevi, os objetos são apenas Mock e o FWriter passado no construtor é utilizar para gravar as etapas, para que eu possa testar o resultado, aqui está o resultado do log do defer neste método:
 <pre>
   TDatabase.Open = foundation-db
   TDatabase.StartTransaction
@@ -187,27 +187,28 @@ Este código é parte dos testes unitários que eu escrevi, os objetos são apen
   TTransaction.Free
   TDatabase.Close
   TDatabase.Free
-</pre> 
+</pre></p>
 
-Note que o Defer acontece apenas depois de TQuery.Open, exatamente na ordem inversa em que os métodos foram agendados no Defer.
+<p>Note que o Defer acontece apenas depois de TQuery.Open, exatamente na ordem inversa em que os métodos foram agendados no Defer.</p>
 
-Outro detalhe é a declaração da variável "Exec: IDeferrer" para reutilizar a mesma instância. Declarando uma variável e reutilizando nas próximas chamadas somente uma instância é alocada, algo que pode ser dispensado para o benefício de ter o código mais limpo com uma pequena sobrecarga.
+<p>Outro detalhe é a declaração da variável &ldquo;Exec: IDeferrer&rdquo; para reutilizar a mesma instância. Declarando uma variável e reutilizando nas próximas chamadas somente uma instância é alocada, algo que pode ser dispensado para o benefício de ter o código mais limpo com uma pequena sobrecarga.</p>
 
-Se a referência do IDeferrer não for armazenada em uma variável local, uma nova instância será criada a cada chamada ao Defer. Seria um problema se a ordem em que as instâncias são desalocadas não fosse a mesma do Defer, mas o comportamento foi consistente em todos os testes. Acredito ser o comportamento padrão do gerenciador de memória do Delphi, o FastMM, armazenar as instâncias alocadas em uma pilha, desta forma a ordem para desalocar é a mesma da implementação do Defer. Se o gerenciador de memória do seu projeto for outro como ScaleMM ou Nexus Memory Manager sugiro fazer testes antes de usar o Defer.
+<p>Se a referência do IDeferrer não for armazenada em uma variável local, uma nova instância será criada a cada chamada ao Defer. Seria um problema se a ordem em que as instâncias são desalocadas não fosse a mesma do Defer, mas o comportamento foi consistente em todos os testes. Acredito ser o comportamento padrão do gerenciador de memória do Delphi, o FastMM, armazenar as instâncias alocadas em uma pilha, desta forma a ordem para desalocar é a mesma da implementação do Defer. Se o gerenciador de memória do seu projeto for outro como ScaleMM ou Nexus Memory Manager sugiro fazer testes antes de usar o Defer.</p>
 
-### Uma implementação alternativa
+<h3 id="uma-implementação-alternativa">Uma implementação alternativa</h3>
 
-Na pasta Experimental do repositório tem uma implementação alternativa que extende o Defer na unit [Foundation.Pattern.Defer.Auto.pas](https://github.com/cesarliws/foundation-4-delphi/blob/master/Experimental/Foundation.Pattern.Defer.Auto.pas).
+<p>Na pasta Experimental do repositório tem uma implementação alternativa que extende o Defer na unit <a href="https://github.com/cesarliws/foundation-4-delphi/blob/master/Experimental/Foundation.Pattern.Defer.Auto.pas" target="_blank">Foundation.Pattern.Defer.Auto.pas</a>.</p>
 
-Esta implementação captura a Thread e o ponteiro do método que chamou o Defer e as utiliza como chave para salvar a instância do Defer em um TDictionary\<string, IDeferrer\> para reutilizar sempre a mesma instância. Funcionou em todos os testes executados em win32, win64, single e multi thread. 
+<p>Esta implementação captura a Thread e o ponteiro do método que chamou o Defer e as utiliza como chave para salvar a instância do Defer em um TDictionary&lt;string, IDeferrer&gt; para reutilizar sempre a mesma instância. Funcionou em todos os testes executados em win32, win64, single e multi thread.</p>
 
-Para capturar o ponteiro do método que iniciou a chamada utilizei a unit [JclDebug.pas](https://github.com/project-jedi/jcl/blob/master/jcl/source/windows/JclDebug.pas) do projeto Jedi Jcl. Para win32 foi possível extrair o básico necessário e colocar na unit [Foundation.Vendor.JclDebug.pas](https://github.com/cesarliws/foundation-4-delphi/blob/master/Experimental/Foundation.Vendor.JclDebug.pas), com os devidos créditos e licença, dispensando a necessidade de instalar a Jcl completa no ambiente de testes. Para win64 é necessário utilizar a unit JclDebug, também recomendada para ambiente de produção.
+<p>Para capturar o ponteiro do método que iniciou a chamada utilizei a unit <a href="https://github.com/project-jedi/jcl/blob/master/jcl/source/windows/JclDebug.pas" target="_blank">JclDebug.pas</a> do projeto Jedi Jcl. Para win32 foi possível extrair o básico necessário e colocar na unit <a href="https://github.com/cesarliws/foundation-4-delphi/blob/master/Experimental/Foundation.Vendor.JclDebug.pas" target="_blank">Foundation.Vendor.JclDebug.pas</a>, com os devidos créditos e licença, dispensando a necessidade de instalar a Jcl completa no ambiente de testes. Para win64 é necessário utilizar a unit JclDebug, também recomendada para ambiente de produção.</p>
 
-A vantagem é clara, apenas uma instância de Defer é criada para cada método de origem, mas por outro lado a sobrecarga gerada da implementação da lista em TDictionary, o mutex necessário para garantir o bom comportamento em multi thread e a dependência da Jcl são maiores do que declarar uma variável ou ter mais de uma instância por método de origem. Tendo em mente que em um comportamento padrão de uma aplicação normal, não haverá muitas instâncias ao mesmo tempo.
+<p>A vantagem é clara, apenas uma instância de Defer é criada para cada método de origem, mas por outro lado a sobrecarga gerada da implementação da lista em TDictionary, o mutex necessário para garantir o bom comportamento em multi thread e a dependência da Jcl são maiores do que declarar uma variável ou ter mais de uma instância por método de origem. Tendo em mente que em um comportamento padrão de uma aplicação normal, não haverá muitas instâncias ao mesmo tempo.</p>
 
-### Mais exemplos
+<h3 id="mais-exemplos">Mais exemplos</h3>
 
-#### Métodos Anônimos
+<h4 id="métodos-anônimos">Métodos Anônimos</h4>
+
 <pre>
   Database := TDatabase.Create(FWriter);
   Database.Open('database-name');
@@ -220,7 +221,8 @@ A vantagem é clara, apenas uma instância de Defer é criada para cada método 
   );
 </pre> 
 
-#### Também consegui implementar um Tracer
+<h4 id="também-consegui-implementar-um-tracer">Também consegui implementar um Tracer</h4>
+
 <pre>
 class function TTrace.Method(Writer: TStringsWriter; const MethodName: string; var TraceProc: ITracer): IDeferrer;
 var
@@ -251,7 +253,7 @@ Que gerou o log:
     < Exit DelegateDeferToTraceExecute
 </pre> 
 
-#### Defer condicional 
+<h4 id="defer-condicional">Defer condicional</h4>
 
 <pre>
 Defer(
@@ -267,7 +269,7 @@ Defer(
 );
 </pre> 
 
-#### Defer como destructor para o record
+<h4 id="defer-como-destructor-para-o-record">Defer como destructor para o record</h4>
 
 <pre>
 type
@@ -287,43 +289,48 @@ begin
 end;
 </pre> 
 
-## Vantagens
+<h2 id="vantagens">Vantagens</h2>
 
-Adiar a execução de procedures tem algumas vantagens:
+<p>Adiar a execução de procedures tem algumas vantagens:</p>
 
-* Garante que você não vai esquecer finalizar um recurso,
+<ul>
+<li><p>Garante que você não vai esquecer finalizar um recurso,
 um erro bem comum quando é feito a manutenção do código e novas condições
-são adicionadas, criando um novo fluxo.
+são adicionadas, criando um novo fluxo.</p></li>
 
-* O código de finalização fica junto ao de inicialização, que é
-mais legível do que colocar no fim do método;
+<li><p>O código de finalização fica junto ao de inicialização, que é
+mais legível do que colocar no fim do método;</p></li>
 
-* Dispensa a necessidade de blocos try/finally para garantir que um
-recurso seja finalizado.
+<li><p>Dispensa a necessidade de blocos try/finally para garantir que um
+recurso seja finalizado.</p></li>
 
-* Mesmo que ocorra uma excessão, todos os métodos agendados no Defer
-serão executados.
+<li><p>Mesmo que ocorra uma excessão, todos os métodos agendados no Defer
+serão executados.</p></li>
+</ul>
 
-## Ressalvas
+<h2 id="ressalvas">Ressalvas</h2>
 
-* O defer adiciona uma pequena sobrecarga, pois um objeto é criado e a sua finalização irá acumular a execução das procedures, código que seria executado de qualquer forma. Mas eu considero que se não se tratar de um código de alta performance, a utilização traz mais vantagens que desvantagens.
+<ul>
+<li><p>O defer adiciona uma pequena sobrecarga, pois um objeto é criado e a sua finalização irá acumular a execução das procedures, código que seria executado de qualquer forma. Mas eu considero que se não se tratar de um código de alta performance, a utilização traz mais vantagens que desvantagens.</p></li>
 
-* Evite usar defer dentro de loops, se for necessário alocar e desalocar recursos dentro de um loop, a desalocação deve ser deterministica. O uso excessivo pode aumentar muito o consumo de memória e causar lentidão. 
+<li><p>Evite usar defer dentro de loops, se for necessário alocar e desalocar recursos dentro de um loop, a desalocação deve ser deterministica. O uso excessivo pode aumentar muito o consumo de memória e causar lentidão.</p></li>
 
-* Ao usar com métodos anônimos tenha em mente que o estado é capturado,
+<li><p>Ao usar com métodos anônimos tenha em mente que o estado é capturado,
 qualquer variável utilizada, terá o valor capturado no momento em que
 o defer for declarado e não o valor alterado durante o fluxo da
-procedure.
+procedure.</p></li>
 
-* Esta padrão é baseado na function Defer em Golang e não tem relação
-aos padrões "Deferred/Promise" e "Deferred Choice".
+<li><p>Esta padrão é baseado na function Defer em Golang e não tem relação
+aos padrões &ldquo;Deferred/Promise&rdquo; e &ldquo;Deferred Choice&rdquo;.</p></li>
+</ul>
 
+<h2 id="repositório">Repositório</h2>
 
-## Repositório
+<ul>
+<li><a href="https://github.com/cesarliws/foundation-4-delphi" target="_blank">Foundation 4 Delphi</a></li>
+</ul>
 
-* [Foundation 4 Delphi](https://github.com/cesarliws/foundation-4-delphi)
-
-O projeto está hospedado no github, eu farei outro post apenas para falar do framework e do que estou preparando para ele. Muita coisa está pronta e em produção, então aguardem notícias em breve.</p>
+<p>O projeto está hospedado no github, eu farei outro post apenas para falar do framework e do que estou preparando para ele. Muita coisa está pronta e em produção, então aguardem notícias em breve.</p>
 
       </p>
       <comments>
