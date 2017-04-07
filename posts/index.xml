@@ -275,8 +275,7 @@ qualquer variável utilizada, terá o valor capturado no momento em que
 o defer for declarado e não o valor alterado durante o fluxo da
 procedure.&lt;/p&gt;&lt;/li&gt;
 
-&lt;li&gt;&lt;p&gt;Esta padrão é baseado na function Defer em Golang e não tem relação
-aos padrões &amp;ldquo;Deferred/Promise&amp;rdquo; e &amp;ldquo;Deferred Choice&amp;rdquo;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Este projeto foi inspirado na function &lt;a href=&#34;https://golang.org/doc/effective_go.html#defer&#34; target=&#34;_blank&#34;&gt;Defer&lt;/a&gt; da &lt;a href=&#34;https://golang.org&#34; target=&#34;_blank&#34;&gt;Golang&lt;/a&gt; e não tem relação com os padrões &amp;ldquo;Deferred/Promise&amp;rdquo; e &amp;ldquo;Deferred Choice&amp;rdquo;.&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h2 id=&#34;repositório&#34;&gt;Repositório&lt;/h2&gt;
