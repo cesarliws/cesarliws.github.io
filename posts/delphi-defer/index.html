@@ -117,7 +117,7 @@ Defer define o padrão &ldquo;adiar a execução de uma procedure&rdquo;, este a
 Seguindo o padrão adotado em Golang para nomear Interface, adicionei o sufixo &ldquo;er&rdquo; e fiz o ajuste para ficar de acordo gramaticalmente.</p>
 
 <p>Internamente, ele deve manter uma pilha com a lista de TProc agendadas, assim estes métodos podem ser executados em ordem inversa quando o objeto TDefer for destruído, sem problemas pois Delphi tem uma implementação de TStack&lt;T&gt; em System.Generics.Collections, mas aqui teve um truque, pois na hora de tirar o TProc da pilha, estava tendo alguns problemas que resolvi decorando o TProc com um record TStackItem antes de armazenar.
-<pre>
+{% highlight pascal %}
 type
   TDeferrer = class(TInterfacedObject, IDeferrer)
   strict private
@@ -135,7 +135,7 @@ type
     destructor Destroy; override;
     function Defer(Proc: TProc): IDeferrer;
   end;
-</pre></p>
+{% endhighlight %}</p>
 
 <p>E para finalizar, criei uma função global que retorna o IDeferrer:
 <pre>
@@ -285,7 +285,7 @@ constructor TValueType<T>.Create(Value: T);
 begin
   FValue := Value;
   FAnyObject := TAnyObject.Create
-  FDeferrer := Defer(FAnyObject.Free);
+  FDeferrer  := Defer(FAnyObject.Free);
 end;
 </pre> 
 
