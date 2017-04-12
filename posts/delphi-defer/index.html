@@ -266,6 +266,26 @@ Defer(
 );
 </pre> 
 
+<h4 id="e-se-for-possível-ocorrer-uma-excessão">E se for possível ocorrer uma excessão</h4>
+
+<p>Com métodos anônimos é possível personalizar a finalização dos recursos.</p>
+
+<pre>
+Defer(
+  procedure(
+    try
+      Connection.Close;
+    except 
+      on E: Exception do
+        Log.Write(E); 
+    end;
+
+    Connection.Free;
+  )
+);
+</pre> 
+  
+
 <h4 id="defer-como-destructor-para-o-record">Defer como destructor para o record</h4>
 
 <pre>
