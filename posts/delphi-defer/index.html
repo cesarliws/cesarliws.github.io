@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Cesar Romero">
     <meta name="description" content="">
-    <meta name="generator" content="Hugo 0.19" />
+    <meta name="generator" content="Hugo 0.20.2" />
 
     
     <title>Delphi Defer &middot; @cesarliws’s cooking bytes</title>
@@ -42,6 +42,13 @@
               
             </li>
         
+            <li>
+              <a href="/en/">English</a>
+              
+                <a href="/en/index.xml"><img src="/img/rss.svg" class="rss-icon" /></a>
+              
+            </li>
+        
         
       </ul>
     </div>
@@ -65,7 +72,9 @@
       <p>
         
 
-<p>Semana passada eu estava refatorando um código do framework &ldquo;Foundation 4 Delphi&rdquo;, pois precisava extender o TComponent.TRecursiveEnumerator para utilizar em outras classes, era uma implementação antiga e resolvi reescrever com generics e aproveitar a vantagem dos smart records para simplificar a integração com o meu TComponentHelper class helper.</p>
+<p><a href="/en/posts/delphi-defer">English version of this post</a></p>
+
+<p>Semana passada eu estava refatorando meu framework &ldquo;Foundation 4 Delphi&rdquo;, pois precisava extender o TComponent.TRecursiveEnumerator para utilizar em outras classes, era uma implementação antiga e resolvi reescrever com generics e aproveitar a vantagem dos smart records para simplificar a integração com o meu TComponentHelper class helper.</p>
 
 <p>Na implementação do record, precisei criar um field &ldquo;IInterface&rdquo; apenas para poder simular um destructor no record, foi quando eu pensei como seria bom se tivessemos o <a href="https://golang.org/doc/effective_go.html#defer" target="_blank">Defer</a> do Golang. Quando estava escrevendo os testes unitários, novamente senti a necessidade do Defer, foi quando decidi pensar mais no padrão e comportamento do Defer, o que me levou a tentar implementar em Delphi, apenas para um exercício de lógica, mesmo inicialmente achando que não seria algo útil para produção, mas para a minha surpresa, consegui algo muito útil.</p>
 
@@ -93,10 +102,10 @@
 
 <p>Também li em uma discussão no reddit que este recurso existe na linguagem D, mas não encontrei referências.</p>
 
-<h3 id="outros-utilidades-para-o-defer">Outros utilidades para o Defer</h3>
+<h3 id="outras-utilidades-para-o-defer">Outras utilidades para o Defer</h3>
 
 <ul>
-<li>Fechar conexão, transação ou query</li>
+<li>Fechar conexão com banco de dados, transação ou query</li>
 <li>Finalizar conexão de socket</li>
 <li>Fechar arquivos abertos</li>
 <li>Desbloquear critical section</li>
@@ -110,7 +119,7 @@
     function Defer(Proc: TProc): IDeferrer;
   end;
 </pre>
-Seguindo o padrão adotado em Golang para nomear Interface, adicionei o sufixo &ldquo;er&rdquo; e fiz o ajuste para ficar de acordo gramaticalmente.</p>
+Eu segui o padrão adotado em Goland para nomear interfaces, adicionando o sufixo &ldquo;er&rdquo;. Este padrão difere do que normalmente encontramos em Delphi, que utiliza o sufixo &ldquo;able&rdquo;, assim teriamos &ldquo;Deferrable&rdquo;.</p>
 
 <p>Internamente, ele deve manter uma pilha com a lista de TProc agendadas, assim estes métodos podem ser executados em ordem inversa quando o objeto TDefer for destruído, sem problemas pois Delphi tem uma implementação de TStack&lt;T&gt; em System.Generics.Collections, mas aqui teve um truque, pois na hora de tirar o TProc da pilha, estava tendo alguns problemas que resolvi decorando o TProc com um record TStackItem antes de armazenar.</p>
 
@@ -144,7 +153,8 @@ end;
 
 <h2 id="como-usar">Como usar</h2>
 
-<p>O objetivo do Defer é adiar métodos, não gerenciar o tempo de vida de objetos, mas como em Delphi Win32/Win64 os objetos são gerenciados manualmente, podemos utilizar o Defer para destruir os objetos, além de finalizar outros recursos.
+<p>O objetivo do Defer é adiar métodos, não gerenciar o tempo de vida de objetos, mas como em Delphi Win32/Win64 os objetos são gerenciados manualmente, podemos utilizar o Defer para destruir os objetos, além de finalizar outros recursos.</p>
+
 <pre>
 uses
   Foundation.System;
@@ -156,35 +166,35 @@ var
 begin
   Database := TDatabase.Create(FWriter);
   Exec := Defer(Database.Free);
-  Database.Open(&lsquo;foundation-db&rsquo;);
+  Database.Open('foundation-db');
   Exec.Defer(Database.Close);
   Transaction := Database.StartTransaction;
   Exec.Defer(Transaction.Free);
   Exec.Defer(Transaction.Commit);
   Query := Transaction.Query;
   Exec.Defer(Query.Free);
-  if Query.Open(&lsquo;select value from table&rsquo;) then
+  if Query.Open('select value from table') then
   begin
     Exec.Defer(Query.Close);
   end;
 end;
-</pre></p>
+</pre> 
 
-<p>Este código é parte dos testes unitários que eu escrevi, os objetos são apenas Mock e o FWriter passado no construtor é utilizar para gravar as etapas, para que eu possa testar o resultado, aqui está o resultado do log do defer neste método:
+<p>Este código é parte dos testes unitários, os objetos são apenas Mock e o objeto FWriter passado no construtor é utilizado para gravar as etapas para poder verificar o resultado, aqui está o log:</p>
+
 <pre>
   TDatabase.Open = foundation-db
   TDatabase.StartTransaction
   TTransaction.Query
   TQuery.Create
   TQuery.Open(select value from table) = True
-// Defer inicia aqui
-  TQuery.Close
+  TQuery.Close // Defer inicia aqui
   TQuery.Free
   TTransaction.Commit
   TTransaction.Free
   TDatabase.Close
   TDatabase.Free
-</pre></p>
+</pre> 
 
 <p>Note que o Defer acontece apenas depois de TQuery.Open, exatamente na ordem inversa em que os métodos foram agendados no Defer.</p>
 
@@ -402,14 +412,11 @@ procedure.</p></li>
     
     
 <script>
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
 ga('create', 'UA-96993514-1', 'auto');
 ga('send', 'pageview');
 </script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
 
   </body>
 </html>

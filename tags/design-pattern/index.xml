@@ -3,13 +3,13 @@
   <channel>
 
     <title>@cesarliws’s cooking bytes - Design Pattern</title>
-    <link>https://cesarliws.github.io/tags/design-pattern/index.xml</link>
+    <link>https://cesarliws.github.io/tags/design-pattern/</link>
     <description>All entries in Design Pattern on cooking bytes</description>
     <generator>Hugo -- gohugo.io</generator>
     
     <copyright>Everything is mine</copyright>
-    
-    <atom:link href="/tags/design-pattern/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 05 Apr 2017 17:02:27 -0300</lastBuildDate>
+    <atom:link href="/tags/design-pattern/" rel="self" type="application/rss+xml" />
     
       
       <item>
@@ -20,7 +20,9 @@
         <guid>https://cesarliws.github.io/posts/delphi-defer/</guid>
         <description>
 
-&lt;p&gt;Semana passada eu estava refatorando um código do framework &amp;ldquo;Foundation 4 Delphi&amp;rdquo;, pois precisava extender o TComponent.TRecursiveEnumerator para utilizar em outras classes, era uma implementação antiga e resolvi reescrever com generics e aproveitar a vantagem dos smart records para simplificar a integração com o meu TComponentHelper class helper.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://cesarliws.github.io/en/posts/delphi-defer&#34;&gt;English version of this post&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Semana passada eu estava refatorando meu framework &amp;ldquo;Foundation 4 Delphi&amp;rdquo;, pois precisava extender o TComponent.TRecursiveEnumerator para utilizar em outras classes, era uma implementação antiga e resolvi reescrever com generics e aproveitar a vantagem dos smart records para simplificar a integração com o meu TComponentHelper class helper.&lt;/p&gt;
 
 &lt;p&gt;Na implementação do record, precisei criar um field &amp;ldquo;IInterface&amp;rdquo; apenas para poder simular um destructor no record, foi quando eu pensei como seria bom se tivessemos o &lt;a href=&#34;https://golang.org/doc/effective_go.html#defer&#34; target=&#34;_blank&#34;&gt;Defer&lt;/a&gt; do Golang. Quando estava escrevendo os testes unitários, novamente senti a necessidade do Defer, foi quando decidi pensar mais no padrão e comportamento do Defer, o que me levou a tentar implementar em Delphi, apenas para um exercício de lógica, mesmo inicialmente achando que não seria algo útil para produção, mas para a minha surpresa, consegui algo muito útil.&lt;/p&gt;
 
@@ -48,10 +50,10 @@
 
 &lt;p&gt;Também li em uma discussão no reddit que este recurso existe na linguagem D, mas não encontrei referências.&lt;/p&gt;
 
-&lt;h3 id=&#34;outros-utilidades-para-o-defer&#34;&gt;Outros utilidades para o Defer&lt;/h3&gt;
+&lt;h3 id=&#34;outras-utilidades-para-o-defer&#34;&gt;Outras utilidades para o Defer&lt;/h3&gt;
 
 &lt;ul&gt;
-&lt;li&gt;Fechar conexão, transação ou query&lt;/li&gt;
+&lt;li&gt;Fechar conexão com banco de dados, transação ou query&lt;/li&gt;
 &lt;li&gt;Finalizar conexão de socket&lt;/li&gt;
 &lt;li&gt;Fechar arquivos abertos&lt;/li&gt;
 &lt;li&gt;Desbloquear critical section&lt;/li&gt;
@@ -65,7 +67,7 @@
     function Defer(Proc: TProc): IDeferrer;
   end;
 &lt;/pre&gt;
-Seguindo o padrão adotado em Golang para nomear Interface, adicionei o sufixo &amp;ldquo;er&amp;rdquo; e fiz o ajuste para ficar de acordo gramaticalmente.&lt;/p&gt;
+Eu segui o padrão adotado em Goland para nomear interfaces, adicionando o sufixo &amp;ldquo;er&amp;rdquo;. Este padrão difere do que normalmente encontramos em Delphi, que utiliza o sufixo &amp;ldquo;able&amp;rdquo;, assim teriamos &amp;ldquo;Deferrable&amp;rdquo;.&lt;/p&gt;
 
 &lt;p&gt;Internamente, ele deve manter uma pilha com a lista de TProc agendadas, assim estes métodos podem ser executados em ordem inversa quando o objeto TDefer for destruído, sem problemas pois Delphi tem uma implementação de TStack&amp;lt;T&amp;gt; em System.Generics.Collections, mas aqui teve um truque, pois na hora de tirar o TProc da pilha, estava tendo alguns problemas que resolvi decorando o TProc com um record TStackItem antes de armazenar.&lt;/p&gt;
 
@@ -99,7 +101,8 @@ end;
 
 &lt;h2 id=&#34;como-usar&#34;&gt;Como usar&lt;/h2&gt;
 
-&lt;p&gt;O objetivo do Defer é adiar métodos, não gerenciar o tempo de vida de objetos, mas como em Delphi Win32/Win64 os objetos são gerenciados manualmente, podemos utilizar o Defer para destruir os objetos, além de finalizar outros recursos.
+&lt;p&gt;O objetivo do Defer é adiar métodos, não gerenciar o tempo de vida de objetos, mas como em Delphi Win32/Win64 os objetos são gerenciados manualmente, podemos utilizar o Defer para destruir os objetos, além de finalizar outros recursos.&lt;/p&gt;
+
 &lt;pre&gt;
 uses
   Foundation.System;
@@ -111,35 +114,35 @@ var
 begin
   Database := TDatabase.Create(FWriter);
   Exec := Defer(Database.Free);
-  Database.Open(&amp;lsquo;foundation-db&amp;rsquo;);
+  Database.Open(&#39;foundation-db&#39;);
   Exec.Defer(Database.Close);
   Transaction := Database.StartTransaction;
   Exec.Defer(Transaction.Free);
   Exec.Defer(Transaction.Commit);
   Query := Transaction.Query;
   Exec.Defer(Query.Free);
-  if Query.Open(&amp;lsquo;select value from table&amp;rsquo;) then
+  if Query.Open(&#39;select value from table&#39;) then
   begin
     Exec.Defer(Query.Close);
   end;
 end;
-&lt;/pre&gt;&lt;/p&gt;
+&lt;/pre&gt; 
 
-&lt;p&gt;Este código é parte dos testes unitários que eu escrevi, os objetos são apenas Mock e o FWriter passado no construtor é utilizar para gravar as etapas, para que eu possa testar o resultado, aqui está o resultado do log do defer neste método:
+&lt;p&gt;Este código é parte dos testes unitários, os objetos são apenas Mock e o objeto FWriter passado no construtor é utilizado para gravar as etapas para poder verificar o resultado, aqui está o log:&lt;/p&gt;
+
 &lt;pre&gt;
   TDatabase.Open = foundation-db
   TDatabase.StartTransaction
   TTransaction.Query
   TQuery.Create
   TQuery.Open(select value from table) = True
-// Defer inicia aqui
-  TQuery.Close
+  TQuery.Close // Defer inicia aqui
   TQuery.Free
   TTransaction.Commit
   TTransaction.Free
   TDatabase.Close
   TDatabase.Free
-&lt;/pre&gt;&lt;/p&gt;
+&lt;/pre&gt; 
 
 &lt;p&gt;Note que o Defer acontece apenas depois de TQuery.Open, exatamente na ordem inversa em que os métodos foram agendados no Defer.&lt;/p&gt;
 

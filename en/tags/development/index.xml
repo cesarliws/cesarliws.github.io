@@ -2,14 +2,14 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
 
-    <title>@cesarliws’s cooking bytes - cooking bytes</title>
-    <link>https://cesarliws.github.io/en/</link>
-    <description>All entries in cooking bytes on cooking bytes</description>
+    <title>@cesarliws’s cooking bytes - Development</title>
+    <link>https://cesarliws.github.io/en/tags/development/</link>
+    <description>All entries in Development on cooking bytes</description>
     <generator>Hugo -- gohugo.io</generator>
     
     <copyright>Everything is mine</copyright>
     <lastBuildDate>Sat, 22 Apr 2017 14:41:40 -0300</lastBuildDate>
-    <atom:link href="/en/" rel="self" type="application/rss+xml" />
+    <atom:link href="/en/tags/development/" rel="self" type="application/rss+xml" />
     
       
       <item>

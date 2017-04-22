@@ -7,6 +7,11 @@
   </url>
   
   <url>
+    <loc>https://cesarliws.github.io/categories/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://cesarliws.github.io/tags/delphi/</loc>
     <lastmod>2017-04-05T17:02:27-03:00</lastmod>
     <priority>0</priority>
@@ -31,7 +36,13 @@
   </url>
   
   <url>
+    <loc>https://cesarliws.github.io/series/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://cesarliws.github.io/tags/</loc>
+    <lastmod>2017-04-05T17:02:27-03:00</lastmod>
     <priority>0</priority>
   </url>
   
