@@ -292,7 +292,7 @@ end;
 
 &lt;li&gt;&lt;p&gt;When using with anonymous methods keep in mind that the state is captured, any variable used will have the value captured at the time the defer is declared and not the value changed during the procedure flow.&lt;/p&gt;&lt;/li&gt;
 
-&lt;li&gt;&lt;p&gt;This project was inspired by Golang&amp;rsquo;s &lt;a href=&#34;https://golang.org/doc/effective_go.html#defer&#34; target=&#34;_blank&#34;&gt;Defer&lt;/a&gt; function and has no relation to  &amp;ldquo;Deferred/Promise&amp;rdquo; and &amp;ldquo;Deferred Choice&amp;rdquo; standards.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;This project was inspired by Golang&amp;rsquo;s &lt;a href=&#34;https://golang.org/doc/effective_go.html#defer&#34; target=&#34;_blank&#34;&gt;Defer&lt;/a&gt; function and has no relation to  &amp;ldquo;Deferred/Promise&amp;rdquo; and &amp;ldquo;Deferred Choice&amp;rdquo; patterns.&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h2 id=&#34;repository&#34;&gt;Repository&lt;/h2&gt;
