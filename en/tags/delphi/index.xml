@@ -20,21 +20,17 @@
         <guid>https://cesarliws.github.io/en/posts/delphi-defer/</guid>
         <description>
 
-&lt;blockquote&gt;
-&lt;p&gt;Warning: This post in &amp;ldquo;English&amp;rdquo; is still a draft.&lt;/p&gt;
-&lt;/blockquote&gt;
-
 &lt;p&gt;&lt;a href=&#34;https://cesarliws.github.io/posts/delphi-defer/&#34;&gt;Versão deste artigo em Português&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;Last week I was refactoring my framework &amp;ldquo;Foundation 4 Delphi&amp;rdquo;, as I needed to extend the TComponent.TRecursiveEnumerator to use in other classes, it was an old implementation and I decided to rewrite with generics and take advantage of smart records to simplify the integration with my TComponentHelper class helper.&lt;/p&gt;
+&lt;p&gt;Few weeks ago I was refactoring my framework &amp;ldquo;Foundation 4 Delphi&amp;rdquo;, I had to extend the TComponent.TRecursiveEnumerator to be used in other classes, it was a very old implementation and I decided to rewrite with generics and take advantage of smart records to simplify the integration with my TComponentHelper class helper.&lt;/p&gt;
 
-&lt;p&gt;In the record&amp;rsquo;s implementation, I had to create a &amp;ldquo;IInterface&amp;rdquo; field just to be able to simulate a destructor in the record, that&amp;rsquo;s when I thought how good it would be if we had the Golang&amp;rsquo;s &lt;a href=&#34;https://golang.org/doc/effective_go.html#defer&#34; target=&#34;_blank&#34;&gt;Defer&lt;/a&gt;. When I was writing the unit tests, I again felt the need for Defer, it was when I decided to think more about Defer pattern and behavior, which led me to try to implement in Delphi, just to exercise logic, even initially thinking it would not be something Useful for production, but in the end of the day, I got something very useful.&lt;/p&gt;
+&lt;p&gt;In the record’s implementation, I had to create a “IInterface” field just to be able to simulate a destructor in the record, when I thought how great would be if we had the &lt;a href=&#34;https://golang.org/doc/effective_go.html#defer&#34; target=&#34;_blank&#34;&gt;Defer&lt;/a&gt; function as in Golang. When I was writing the unit tests, I felt again the need for Defer, so I decided to think more about the pattern and behavior of Defer, which led me to try to implement it in Delphi just as a logic exercise, even thinking that it would not be something useful for production, but in the end of the day, I got something very useful.&lt;/p&gt;
 
 &lt;h2 id=&#34;what-is-defer&#34;&gt;What is Defer?&lt;/h2&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://cesarliws.github.io/img/postponed.jpg&#34; alt=&#34;Postpone image&#34; /&gt;  Defer defines the &amp;ldquo;postpone procedure&amp;rdquo; pattern, this postpone should schedule a &amp;ldquo;procedure: TProc&amp;rdquo; to run after the end of the caller method that executed the call to the Defer function (Proc: TProc).&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://cesarliws.github.io/img/postponed.jpg&#34; alt=&#34;Postpone image&#34; /&gt; Defer defines the “postpone procedure” pattern, this postpone should schedule a “procedure: TProc” to run it after the end of the caller method that executed the call to the Defer function (Proc: TProc).&lt;/p&gt;
 
-&lt;p&gt;At the end of the method, Defer must execute all stacked procedures in the reverse order of the schedule.&lt;/p&gt;
+&lt;p&gt;At the end of the caller method, Defer must execute all stacked procedures in the reverse order in which they were scheduled.&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&#34;https://golang.org/doc/effective_go.html#defer&#34; target=&#34;_blank&#34;&gt;Defer according to the Golang documentation &lt;/a&gt;:&lt;/p&gt;
 
@@ -42,38 +38,40 @@
 &lt;p&gt;Go&amp;rsquo;s defer statement schedules a function call (the deferred function) to be run immediately before the function executing the defer returns. It&amp;rsquo;s an unusual but effective way to deal with situations such as resources that must be released regardless of which path a function takes to return. The canonical examples are unlocking a mutex or closing a file.&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;One important information here is that Golang is a language with garbage collection, so it is not necessary to destroy the created objects, only to deallocate resources.&lt;/p&gt;
+&lt;p&gt;It is important to know that Golang is a language with garbage collection, so it is not necessary to destroy the created objects, only to deallocate resources.&lt;/p&gt;
 
 &lt;p&gt;And regardless of the executed flow in the function, Defer should always execute the already scheduled methods, so if there is an Exit before the end or if an exception occurs, all the scheduled methods must be executed.&lt;/p&gt;
 
-&lt;p&gt;In my research, I discovered that Defer was implemented for Apple&amp;rsquo;s Swift, version 2.0. I like the title of this article, try / finally done right:&lt;/p&gt;
+&lt;p&gt;In my research, I discovered that Defer was implemented for Apple&amp;rsquo;s Swift, version 2.0. You can read more about that in this article with a nice title &amp;ldquo;try / finally done right&amp;rdquo;:&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://www.hackingwithswift.com/new-syntax-swift-2-defer&#34; target=&#34;_blank&#34;&gt;The defer keyword in Swift 2: try/finally done right&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;I also read in a discussion on reddit that this feature exists in D language, but I have not found any references.&lt;/p&gt;
+&lt;p&gt;I also read on reddit that this feature exists in D language, but I haven&amp;rsquo;t found any references.&lt;/p&gt;
 
-&lt;h3 id=&#34;other-uses-for-defer&#34;&gt;Other uses for Defer&lt;/h3&gt;
+&lt;h3 id=&#34;some-uses-for-defer&#34;&gt;Some uses for Defer&lt;/h3&gt;
 
 &lt;ul&gt;
-&lt;li&gt;Close database connection, transaction, or query&lt;/li&gt;
-&lt;li&gt;Close socket connection&lt;/li&gt;
-&lt;li&gt;Close opened files&lt;/li&gt;
-&lt;li&gt;Unlock critical section/mutex&lt;/li&gt;
+&lt;li&gt;Closing database connection, transaction, or query&lt;/li&gt;
+&lt;li&gt;Closing socket connection&lt;/li&gt;
+&lt;li&gt;Closing opened files&lt;/li&gt;
+&lt;li&gt;Unlocking critical section/mutex&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h2 id=&#34;the-implementation&#34;&gt;The Implementation&lt;/h2&gt;
 
-&lt;p&gt;After analyzing the behavior and understanding how Defer should work, I started implementing using Interfaces, so it would be automatically deallocated when the Interface exits context, this was easy.
+&lt;p&gt;After understanding how a Defer implementation should work, I implemented it using Interfaces, in this way the object would be automatically deallocated in the &amp;ldquo;end&amp;rdquo; statement of the caller method.&lt;/p&gt;
+
 &lt;pre&gt;
   IDeferrer = Interface(IInterface)
     function Defer(Proc: TProc): IDeferrer;
   end;
 &lt;/pre&gt;
-I followed the Goland standard for naming interfaces, adding the suffix &amp;ldquo;er&amp;rdquo;. This pattern differs from what we usually see in Delphi, usually adding the suffix &amp;ldquo;able&amp;rdquo;, so we would have &amp;ldquo;Deferrable&amp;rdquo;.&lt;/p&gt;
 
-&lt;p&gt;Internally, it must maintain a stack with the scheduled TProc list, so these methods can be executed in reverse order when the TDefer object is destroyed, no problems since Delphi has a TStack&amp;lt;T&amp;gt; implementation in System.Generics.Collections, but Here was a trick because at the time of getting TProc out of the stack, I was having some problems, then I decided to decorate TProc with a TStackItem record before storing.&lt;/p&gt;
+&lt;p&gt;I followed the Goland standard for naming interfaces, adding the suffix &amp;ldquo;er&amp;rdquo;. This pattern differs from what we usually see in Delphi, usually adding the suffix &amp;ldquo;able&amp;rdquo;, like in &amp;ldquo;Deferrable&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;Internally, it has a stack with the scheduled TProc list, these methods will be executed when the TDefer object is destroyed, in the reverse order in which they were scheduled. Delphi already have a TStack&amp;lt;T&amp;gt; implementation in System.Generics.Collections, I just had to decorate TProc with a TStackItem record before storing.&lt;/p&gt;
 
 &lt;pre&gt;
 type
@@ -95,7 +93,7 @@ type
   end;
 &lt;/pre&gt;
 
-&lt;p&gt;To finish, I created a global function that returns IDeferrer:&lt;/p&gt;
+&lt;p&gt;To finish, I created a global function that returns the created instance already storing the first method:&lt;/p&gt;
 
 &lt;pre&gt;
 function Defer(Proc: TProc): IDeferrer;
@@ -106,7 +104,7 @@ end;
 
 &lt;h2 id=&#34;how-it-works&#34;&gt;How it works&lt;/h2&gt;
 
-&lt;p&gt;The purpose of Defer is to defer methods, not to manage the lifetime of objects, but as in Delphi Win32/Win64 objects are manually managed, we can use Defer to destroy objects, as well to finalize other resources.&lt;/p&gt;
+&lt;p&gt;The purpose of Defer is to defer methods execution, it not to manage the lifetime of objects, but as in Delphi Win32/Win64 objects are manually managed, we can use Defer to destroy objects, as well to finalize other resources.&lt;/p&gt;
 
 &lt;pre&gt;
 uses
@@ -119,13 +117,17 @@ var
 begin
   Database := TDatabase.Create(FWriter);
   Exec := Defer(Database.Free);
+
   Database.Open(&#39;foundation-db&#39;);
   Exec.Defer(Database.Close);
+  
   Transaction := Database.StartTransaction;
   Exec.Defer(Transaction.Free);
   Exec.Defer(Transaction.Commit);
+  
   Query := Transaction.Query;
   Exec.Defer(Query.Free);
+  
   if Query.Open(&#39;select value from table&#39;) then
   begin
     Exec.Defer(Query.Close);
@@ -133,15 +135,20 @@ begin
 end;
 &lt;/pre&gt; 
 
-&lt;p&gt;This code is part of the unit tests, the objects are just Mock and the FWriter object passed in the constructor is used to write the steps so the results can be checked, here is the log:&lt;/p&gt;
+&lt;p&gt;This code is part of the unit tests. The objects are just Mock, the FWriter object passed in the constructor is used to write the steps so the results can be validated, this was the way I found to create tests for Defer, as it will only run when being destroyed.&lt;/p&gt;
+
+&lt;p&gt;This is the case test log used to check the results:&lt;/p&gt;
 
 &lt;pre&gt;
-  TDatabase.Open = foundation-db
+  TDatabase.Open(&#39;foundation-db&#39;)
   TDatabase.StartTransaction
   TTransaction.Query
   TQuery.Create
-  TQuery.Open(select value from table) = True
-  TQuery.Close // Defer starts here
+  TQuery.Open(&#39;select value from table&#39;)
+
+&gt; &#34;Defer execution starts here&#34;
+
+  TQuery.Close 
   TQuery.Free
   TTransaction.Commit
   TTransaction.Free
@@ -151,19 +158,19 @@ end;
 
 &lt;p&gt;Note that Defer happens only after TQuery.Open, exactly in the reverse order in which the methods were scheduled in Defer.&lt;/p&gt;
 
-&lt;p&gt;Another detail is the declaration of &amp;ldquo;Exec: IDeferrer&amp;rdquo; variable to have only one instance. Declaring the variable is not required, and the code will be cleaner with just a small overhead.&lt;/p&gt;
+&lt;p&gt;Another detail is the declaration of the &amp;ldquo;Exec: IDeferrer&amp;rdquo; variable to have only one instance. Declaring the variable is not required, and the code will be cleaner with just a small overhead.&lt;/p&gt;
 
-&lt;p&gt;If the IDeferrer reference is not stored in a local variable, a new instance is created for each Defer call. That would be a problem if the order in which the instances are deallocated was not the same as Defer, but the behavior was consistent across all tests. I believe it is the default behavior of FastMM, Delphi default memory manager, store the allocated instances in a stack, so the order to deallocate is the same as the Defer implementation. If your project memory manager is another one like ScaleMM or Nexus Memory Manager I suggest doing tests before using Defer.&lt;/p&gt;
+&lt;p&gt;If the IDeferrer reference is not stored in a local variable, a new instance is created for each Defer call. That would be a problem if the order in which the instances are deallocated was not the same as Defer, but the behavior was consistent across all tests. I assume it is the default behavior of &lt;a href=&#34;https://github.com/pleriche/FastMM4&#34; target=&#34;_blank&#34;&gt;FastMM&lt;/a&gt;, the Delphi default memory manager, to store the allocated instances in a stack, so the order to deallocate is the same as we need for Defer&amp;rsquo;s implementation. If your project memory manager is another one like &lt;a href=&#34;https://github.com/andremussche/scalemm/tree/version2&#34; target=&#34;_blank&#34;&gt;ScaleMM&lt;/a&gt; or &lt;a href=&#34;https://www.nexusdb.com/support/index.php?q=node/522&#34; target=&#34;_blank&#34;&gt;Nexus Memory Manager&lt;/a&gt; I suggest doing tests before using Defer, although I assume this should be the default behaviour for deallocating resources.&lt;/p&gt;
 
 &lt;h3 id=&#34;an-alternative-implementation&#34;&gt;An alternative implementation&lt;/h3&gt;
 
-&lt;p&gt;In the Experimental folder of the repository there is an alternate implementation that extends the Defer in the &lt;a href=&#34;https://github.com/cesarliws/foundation-4-delphi/blob/master/Experimental/Foundation.Pattern.Defer.Auto.pas&#34; target=&#34;_blank&#34;&gt;Foundation.Pattern.Defer.Auto.pas&lt;/a&gt; unit.&lt;/p&gt;
+&lt;p&gt;In the Experimental folder of the repository there is an alternate implementation that extends the Defer in the &lt;a href=&#34;https://github.com/cesarliws/foundation-4-delphi/blob/master/Experimental/Foundation.Pattern.Defer.Auto.pas&#34; target=&#34;_blank&#34;&gt;Foundation.Pattern.Defer.Auto&lt;/a&gt; unit.&lt;/p&gt;
 
-&lt;p&gt;This implementation captures the Thread and method pointer that called Defer and uses them as the key to save the Defer instance in a TDictionary&amp;lt;string, IDeferrer&amp;gt; to always reuse the same instance. It worked on all tests running on win32, win64, single and multi thread.&lt;/p&gt;
+&lt;p&gt;This implementation captures the thread id and caller method pointer to be used as the key to save the Defer instance in a TDictionary&amp;lt;string, IDeferrer&amp;gt; to always reuse the same instance. I have successfully tested this implementation on Win32, Win64 and in single and multi thread.&lt;/p&gt;
 
-&lt;p&gt;To capture the pointer of the caller method I used the &lt;a href=&#34;https://github.com/project-jedi/jcl/blob/master/jcl/source/windows/JclDebug.pas&#34; target=&#34;_blank&#34;&gt;JclDebug.pas&lt;/a&gt; unit from the Jedi Jcl project. For win32 I manage to extract only the necessary parts and put in the &lt;a href=&#34;https://github.com/cesarliws/foundation-4-delphi/blob/master/Experimental/Foundation.Vendor.JclDebug.pas&#34; target=&#34;_blank&#34;&gt;Foundation.Vendor.JclDebug.pas&lt;/a&gt; unit, with proper credits and license, to make easy to test Defer. For win64 it is necessary to use the JclDebug unit, also recommended for the production environment.&lt;/p&gt;
+&lt;p&gt;To capture the caller method reference, the &lt;a href=&#34;https://github.com/project-jedi/jcl/blob/master/jcl/source/windows/JclDebug.pas&#34; target=&#34;_blank&#34;&gt;JclDebug&lt;/a&gt; unit from the Jedi Jcl project is used. For win32 I managed to extract only the necessary lines of code to the &lt;a href=&#34;https://github.com/cesarliws/foundation-4-delphi/blob/master/Experimental/Foundation.Vendor.JclDebug.pas&#34; target=&#34;_blank&#34;&gt;Foundation.Vendor.JclDebug&lt;/a&gt; unit, just to make easy to test, along with the author’s credits and license. For production and Win64, I recommend you to use the latest JclDebug unit.&lt;/p&gt;
 
-&lt;p&gt;The advantage is clear, only one instance of Defer is created for each caller method, but on the other hand the overhead generated from the implementation of the list in TDictionary, the mutex needed to ensure good multi-thread behavior and the dependency on Jcl are bigger than declaring a variable or having more than one instance per caller method. Keeping in mind that in common application, there will not be many instances at the same time.&lt;/p&gt;
+&lt;p&gt;The advantage is clear, only one instance of Defer is created for each caller method, on the other hand the overhead generated from the implementation of the list using the TDictionary class, the mutex needed to ensure good multi-thread behavior and Jcl dependency, they are bigger than just declaring a variable or having more than one instance of the Defer method caller. Assuming that in common applications, there will not be many instances at the same time.&lt;/p&gt;
 
 &lt;h3 id=&#34;more-examples&#34;&gt;More examples&lt;/h3&gt;
 
@@ -181,7 +188,7 @@ end;
   );
 &lt;/pre&gt; 
 
-&lt;h4 id=&#34;i-was-also-able-to-implement-a-method-tracer&#34;&gt;I was also able to implement a method tracer&lt;/h4&gt;
+&lt;h4 id=&#34;method-tracer&#34;&gt;Method tracer&lt;/h4&gt;
 
 &lt;pre&gt;
 class function TTrace.Method(Writer: TStringsWriter; const MethodName: string; var TraceProc: ITracer): IDeferrer;
@@ -204,7 +211,9 @@ begin
   Trace.Step(&#39;Third&#39;);
 end;
 &lt;/pre&gt; 
-Output log: 
+
+&lt;p&gt;The tracer&amp;rsquo;s output log:&lt;/p&gt;
+
 &lt;pre&gt;
     &gt; Enter DelegateDeferToTraceExecute
         1. DelegateDeferToTraceExecute: First
@@ -213,7 +222,7 @@ Output log:
     &lt; Exit DelegateDeferToTraceExecute
 &lt;/pre&gt; 
 
-&lt;h4 id=&#34;conditional-defer-in-anonymous-method&#34;&gt;Conditional Defer in Anonymous method&lt;/h4&gt;
+&lt;h4 id=&#34;conditional-finalization-in-anonymous-method&#34;&gt;Conditional finalization in anonymous method&lt;/h4&gt;
 
 &lt;pre&gt;
 Defer(
@@ -229,9 +238,7 @@ Defer(
 );
 &lt;/pre&gt; 
 
-&lt;h4 id=&#34;how-about-exception&#34;&gt;How about Exception&lt;/h4&gt;
-
-&lt;p&gt;With anonymous methods you can customize the resource finalization.&lt;/p&gt;
+&lt;h4 id=&#34;handling-exceptions&#34;&gt;Handling exceptions&lt;/h4&gt;
 
 &lt;pre&gt;
 Defer(
@@ -253,7 +260,7 @@ Defer(
 
 &lt;pre&gt;
 type
-  TValueType&lt;T&gt; = record
+  TValueType&lt; T &gt; = record
   private
     FAnyObject: TAnyObject;
     FDeferrer: IDeferrer;
@@ -261,7 +268,8 @@ type
   public
     constructor Create(Value: T);
   end;  
-constructor TValueType&lt;T&gt;.Create(Value: T);
+
+constructor TValueType&lt; T &gt;.Create(Value: T);
 begin
   FValue := Value;
   FAnyObject := TAnyObject.Create
@@ -274,25 +282,25 @@ end;
 &lt;p&gt;Delaying the execution of procedures has some advantages:&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;Ensures that you will not forget to finalize a resource, a very common error shile doing code maintenance and new conditions are added, creating a new flow.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Ensures that you will not forget to finalize a resource, a very common error while doing code maintenance and new conditions are added creating a new flow.&lt;/p&gt;&lt;/li&gt;
 
 &lt;li&gt;&lt;p&gt;The finalization code is next to the initialization code, which is more readable than putting at the end of the method;&lt;/p&gt;&lt;/li&gt;
 
 &lt;li&gt;&lt;p&gt;No need for try/finally blocks to ensure that a resource is finalized.&lt;/p&gt;&lt;/li&gt;
 
-&lt;li&gt;&lt;p&gt;Even if an exception occurs, all methods scheduled in Defer will be executed.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Even if an exception occurs, all scheduled methods will be executed.&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h2 id=&#34;caveats&#34;&gt;Caveats&lt;/h2&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;Defer adds a small overhead because an object is created and the finalization will accumulate the execution of procedures, code that would be executed anyway. But I consider that if it is not a high performance code, the use of defer brings more advantages than disadvantages.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Defer adds a small overhead by the created &amp;ldquo;Defer&amp;rdquo; object, the finalization will accumulate the execution of procedures, code that should be executed anyway. I consider that not being a high performance code, the use of defer brings more advantages than disadvantages.&lt;/p&gt;&lt;/li&gt;
 
 &lt;li&gt;&lt;p&gt;Avoid using defer inside loops, if it is necessary to allocate and deallocate resources within a loop, the deallocation must be deterministic. Excessive usage can greatly increase memory consumption and cause slowness.&lt;/p&gt;&lt;/li&gt;
 
-&lt;li&gt;&lt;p&gt;When using with anonymous methods keep in mind that the state is captured, any variable used will have the value captured at the time the defer is declared and not the value changed during the procedure flow.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;When using with anonymous methods keep in mind that the state is captured, any variable used will have the value captured at the time the defer is declared and not the value changed during the procedure flow. Read more in &lt;a href=&#34;https://community.embarcadero.com/blogs/entry/understanding-anonymous-methods-37828&#34; target=&#34;_blank&#34;&gt;Understanding Anonymous Methods&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 
-&lt;li&gt;&lt;p&gt;This project was inspired by Golang&amp;rsquo;s &lt;a href=&#34;https://golang.org/doc/effective_go.html#defer&#34; target=&#34;_blank&#34;&gt;Defer&lt;/a&gt; function and has no relation to  &amp;ldquo;Deferred/Promise&amp;rdquo; and &amp;ldquo;Deferred Choice&amp;rdquo; patterns.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;This project was inspired by Golang &lt;a href=&#34;https://golang.org/doc/effective_go.html#defer&#34; target=&#34;_blank&#34;&gt;Defer&lt;/a&gt; function and has no relation to  &amp;ldquo;Deferred/Promise&amp;rdquo; and &amp;ldquo;Deferred Choice&amp;rdquo; patterns.&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h2 id=&#34;repository&#34;&gt;Repository&lt;/h2&gt;
