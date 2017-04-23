@@ -121,7 +121,7 @@
   end;
 </pre>
 
-<p>Eu segui o padrão adotado em Goland para nomear interfaces, adicionando o sufixo &ldquo;er&rdquo;. Este padrão difere do que normalmente encontramos em Delphi, que utiliza o sufixo &ldquo;able&rdquo;, assim teriamos &ldquo;Deferrable&rdquo;.</p>
+<p>Eu segui o padrão adotado em Golang para nomear interfaces, adicionando o sufixo &ldquo;er&rdquo;. Este padrão difere do que normalmente encontramos em Delphi, que utiliza o sufixo &ldquo;able&rdquo;, assim teriamos &ldquo;Deferrable&rdquo;.</p>
 
 <p>Internamente, ele deve manter uma pilha com a lista de TProc agendadas, para que estes métodos sejam executados em ordem inversa quando o objeto TDefer for destruído, sem problemas pois Delphi tem uma implementação de TStack&lt;T&gt; em System.Generics.Collections, eu só tive de decorar o TProc com um record TStackItem antes de armazenar.</p>
 
