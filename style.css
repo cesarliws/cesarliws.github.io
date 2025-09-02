@@ -248,7 +248,7 @@ h2 {
     margin: 0px auto 30px auto; /* Centraliza e adiciona margem inferior */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra suave para destacar */
     object-fit: cover; /* Garante que a imagem preencha o círculo sem distorcer */
-    border: 3px solid var(--primary-color); /* Borda para destaque */
+    border: 3px solid var(--dark-blue); /* Borda para destaque */
 }
 
 /* Ajuste o text-indent para o primeiro parágrafo após a foto */
