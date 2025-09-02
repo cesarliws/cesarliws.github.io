@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delphi Multithreading por Cesar Romero - Em Breve</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="cover-image">
+                    <img src="cover.jpg" alt="Capa do Livro Delphi Multithreading">
+                </div>
+                <div class="header-text">
+                    <h1>Delphi Multithreading</h1>
+                    <h2>Threads, Concorrência, Paralelismo e Assincronismo</h2>
+                    <p class="subtitle">O Guia Definitivo para Criar Aplicações Delphi Modernas, Rápidas e Responsivas.</p>
+                    <div class="form-container" id="inscreva-se">
+                        <h3>Seja o primeiro a saber!</h3>
+                        <p>Deixe seu e-mail para ser notificado sobre o lançamento, novidades e descontos exclusivos.</p>
+                        <form action="https://formspree.io/f/xovnnqde" method="POST">
+                            <input type="email" name="email" placeholder="Seu melhor e-mail" required>
+                            <button type="submit">Quero ser notificado!</button>
+                        </form>
+                        <p class="release-note">Lançamento inicial em formato impresso.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section id="description">
+            <h2>Sua aplicação Delphi congela em operações demoradas?</h2>
+            <p>Você sente que não está aproveitando todo o poder dos processadores multi-core modernos? É hora de dominar a programação concorrente.</p>
+            <p>Este livro é um guia prático e completo, escrito por um Embarcadero MVP com quase 30 anos de experiência. Do básico da TThread à elegância da Parallel Programming Library (PPL), você aprenderá a construir aplicações robustas, evitar os temidos "UI Freezes", e resolver problemas complexos como race conditions e deadlocks. Prepare-se para transformar suas aplicações desktop e mobile, entregando a performance e a fluidez que seus usuários esperam.</p>
+        </section>
+
+        <section id="highlights">
+            <h2>Destaques do Livro</h2>
+            <div class="highlight-cards">
+                <div class="card">
+                    <h3>Vá Além do Básico: Domine Padrões Profissionais</h3>
+                    <p>Mergulhe em tópicos avançados essenciais para aplicações de alta performance, como a criação e gerenciamento de um <strong>Thread Pool personalizado</strong>, e construa arquiteturas escaláveis que lidam com centenas de tarefas de forma eficiente.</p>
+                </div>
+                <div class="card">
+                    <h3>Crie Apps Mobile Realmente Responsivos</h3>
+                    <p>Este livro dedica um módulo inteiro às <strong>particularidades da concorrência em plataformas mobile</strong>. Aprenda a evitar os temidos erros de "Application Not Responding" (ANRs) no Android e a garantir uma experiência de usuário fluida.</p>
+                </div>
+                <div class="card">
+                    <h3>Sincronização Desmistificada</h3>
+                    <p>Domine <code>TCriticalSection</code>, <code>TMutex</code>, <code>TMonitor</code>, <code>TEvent</code> e <code>TSemaphore</code>. Aprenda não apenas <em>como</em> usá-las, mas <em>quando</em> e <em>porquê</em>, com exemplos práticos para prevenir <em>Race Conditions</em> e <em>Deadlocks</em>.</p>
+                </div>
+                <div class="card">
+                    <h3>A Elegância da Parallel Programming Library (PPL)</h3>
+                    <p>Modernize seu código com <code>TTask</code>, <code>IFuture</code> e <code>TParallel.For</code>. Orquestre fluxos de trabalho complexos, processe dados em paralelo e execute requisições de rede de forma elegante, escrevendo menos código e alcançando mais performance.</p>
+                </div>
+                <div class="card">
+                    <h3>Padrões de Arquitetura e Código Limpo</h3>
+                    <p>Uma aplicação <em>multithreaded</em> robusta começa com uma boa arquitetura. Aprenda as melhores práticas para organizar seu código, desacoplar a lógica de negócio da UI e criar um código limpo, testável e de fácil manutenção.</p>
+                </div>
+                <div class="card">
+                    <h3>Padrões Avançados de Resiliência</h3>
+                    <p>Crie <em>threads</em> à prova de falhas. Aprenda a implementar um <strong><code>TCancellationToken</code></strong> para um cancelamento cooperativo elegante e <strong>estratégias de <em>retry</em> com <em>backoff</em> exponencial</strong> para lidar com falhas de rede e serviços temporariamente indisponíveis.</p>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="table-of-contents">
+            <h2>Sumário Completo</h2>
+            <div class="summary-grid">
+                <div>
+                    <h4>1: Introdução ao Processamento Concorrente e Assíncrono</h4>
+                    <ul>
+                        <li>1.1: O Problema do Congelamento da Interface (UI Freeze)</li>
+                        <li>1.2: O que é Processamento Concorrente e Assíncrono?</li>
+                        <li>1.3: Por que Usar Threads/Assincronismo? (Benefícios)</li>
+                        <li>1.4: O Conceito de Thread</li>
+                        <li>1.5: Quando NÃO usar Threads (e buscar alternativas)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>2: Fundamentos de Threads em Delphi (TThread básico)</h4>
+                    <ul>
+                        <li>2.1: A Classe TThread - Estrutura e Ciclo de Vida</li>
+                        <li>2.2: Comunicando com a Thread Principal (Synchronize e Queue)</li>
+                        <li>2.3: Lidando com Múltiplas Threads e Dados Compartilhados</li>
+                        <li>2.4: Threads Anônimas (TThread.CreateAnonymousThread)</li>
+                    </ul>
+                </div>
+                 <div>
+                    <h4>3: Sincronização de Threads</h4>
+                    <ul>
+                        <li>3.1: TCriticalSection</li>
+                        <li>3.2: TMonitor</li>
+                        <li>3.3: TMutex</li>
+                        <li>3.4: TSemaphore</li>
+                        <li>3.5: TEvent</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>4: Gerenciamento e Cancelamento de Threads</h4>
+                    <ul>
+                        <li>4.1: Início e Pausa Controlada</li>
+                        <li>4.2: Cancelamento Gentil (Terminate e WaitFor)</li>
+                        <li>4.3: Cancelamento Cooperativo com TCancellationToken</li>
+                        <li>4.4: Tratamento de Exceções em Threads</li>
+                        <li>4.5: Estratégias de Reprocessamento e Retry</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>5: Alternativas Assíncronas</h4>
+                    <ul>
+                        <li>5.1: PostMessage e SendMessage</li>
+                        <li>5.2: I/O Assíncrono (Visão Geral)</li>
+                        <li>5.3: Integração de I/O Assíncrono com Threads</li>
+                        <li>5.4: Padrão de Execução Assíncrona na Main Thread</li>
+                        <li>5.5: Comunicação via System.Messaging</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>6: Parallel Programming Library (PPL)</h4>
+                    <ul>
+                        <li>6.1: Introdução à PPL</li>
+                        <li>6.2: TTask e ITask</li>
+                        <li>6.3: TParallel.For</li>
+                        <li>6.4: Coordenação de Tarefas</li>
+                        <li>6.5: Cancelamento de Tarefas PPL</li>
+                    </ul>
+                </div>
+                 <div>
+                    <h4>7: Tópicos Avançados em Threads</h4>
+                    <ul>
+                        <li>7.1: Criando um Thread Pool Personalizado</li>
+                        <li>7.2: Gerenciamento de Memória e Multithreading</li>
+                        <li>7.3: TInterlocked - Operações Atômicas</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>8: Melhores Práticas e Depuração</h4>
+                    <ul>
+                        <li>8.1: Organização do Código</li>
+                        <li>8.2: Coleções Thread-Safe</li>
+                        <li>8.3: Prevenção de Deadlocks e Race Conditions</li>
+                        <li>8.5: Depuração de Aplicações Multithreaded</li>
+                    </ul>
+                </div>
+                 <div>
+                    <h4>9: Threads e Concorrência em Aplicações Mobile</h4>
+                    <ul>
+                        <li>9.2: Prevenção de ANRs no Android</li>
+                        <li>9.3: Concorrência no iOS: Regras e APIs Nativas</li>
+                        <li>9.6: Requisições REST Paralelas</li>
+                        <li>9.8: Processamento de Imagens em Lote</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>10: Exemplos Úteis com PPL</h4>
+                    <ul>
+                        <li>10.1: Processamento Paralelo de Arquivos em Lote</li>
+                        <li>10.2: Requisições de Rede Assíncronas e Paralelas</li>
+                        <li>10.3: Simulações e Cálculos Intensivos</li>
+                        <li>10.4: Orquestração de Fluxos de Trabalho Complexos</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="author">
+            <h2>Sobre o Autor</h2>
+            <div class="author-content">
+                <p><strong>Cesar Romero</strong> é um Arquiteto de Software, Engenheiro de Sistemas e um veterano da plataforma Delphi, com a qual tem trabalhado apaixonadamente desde 1996, nos primórdios da ferramenta. Com uma carreira de quase 30 anos, ele acumulou uma vasta experiência liderando equipes e projetando arquiteturas de software robustas para sistemas críticos em ambientes Windows, Linux, Cloud e Mobile.</p>
+                <p>Sua expertise não se limita a uma única linguagem; Cesar é um poliglota da programação, com profundo conhecimento em C#, Python, Go, JavaScript e Java, além de bancos de dados relacionais e NoSQL. Essa visão ampla lhe confere uma perspectiva única sobre os desafios do desenvolvimento de software moderno, desde a migração de sistemas legados até a orquestração de microserviços em nuvem com Azure Kubernetes Service (AKS).</p>
+                <p>Como um <strong>Embarcadero MVP</strong>, Cesar é uma voz ativa e respeitada na comunidade de desenvolvedores. Ele é um palestrante frequente em eventos no Brasil e no exterior, além de ter atuado como autor e instrutor em treinamentos para equipes de desenvolvimento, sempre com o objetivo de compartilhar conhecimento prático e de alto nível.</p>
+                <p>Este livro nasceu do desejo de preencher uma lacuna, consolidando anos de estudo e experiência prática em um guia definitivo sobre *multithreading*, concorrência e paralelismo – um dos tópicos mais desafiadores e essenciais para a criação de aplicações Delphi verdadeiramente modernas e performáticas.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Cesar Romero. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
