@@ -237,5 +237,35 @@
         (window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');
         ml('account', '1773681');
     </script>
-    </body>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Define um tempo de espera para verificar se o formulário do MailerLite carregou
+            setTimeout(function() {
+                const mailerLiteForm = document.querySelector('.ml-embedded[data-form="0KvxyG"]');
+                
+                // Se o container do formulário estiver vazio, significa que foi bloqueado
+                if (mailerLiteForm && mailerLiteForm.innerHTML.trim() === '') {
+                    
+                    // Cria o conteúdo HTML do botão de fallback
+                    const fallbackHTML = `
+                        <div class="fallback-form">
+                            <h3>Seja o primeiro a saber!</h3>
+                            <p>Deixe seu e-mail para ser notificado sobre o lançamento, novidades e descontos exclusivos.</p>
+                            <button id="fallback-button">Inscreva-se para o Lançamento</button>
+                        </div>
+                    `;
+                    
+                    // Insere o HTML do fallback no lugar do formulário original
+                    mailerLiteForm.innerHTML = fallbackHTML;
+                    
+                    // Adiciona o evento de clique ao novo botão para abrir o Google Forms
+                    document.getElementById('fallback-button').addEventListener('click', function() {
+                        window.open('https://forms.gle/8n2YFkJ9MKUECJ5K6', '_blank');
+                    });
+                }
+            }, 3000); // Espera 3 segundos antes de verificar
+        });
+    </script>
+</body>
 </html>
