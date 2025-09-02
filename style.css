@@ -256,6 +256,38 @@ h2 {
     text-indent: 0; /* Remove o recuo do primeiro parágrafo para não ficar estranho após a foto */
 }
 
+/* Estilos para a mensagem de fallback do formulário */
+.fallback-message {
+    padding: 20px;
+    background-color: #ffebee; /* Fundo vermelho claro para chamar a atenção */
+    border: 1px solid #e57373; /* Borda vermelha */
+    border-radius: 8px;
+    text-align: center;
+    color: #c62828; /* Texto vermelho escuro */
+}
+
+.fallback-message p {
+    margin: 0 0 10px 0;
+    text-align: center; /* Garante o alinhamento central */
+    color: #c62828; /* Garante que o texto dentro do parágrafo também seja vermelho */
+}
+
+.fallback-message a.fallback-link {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+.fallback-message a.fallback-link:hover {
+    background-color: #005bb5;
+}
+
 footer {
     background-color: var(--dark-blue);
     color: var(--light-text);
