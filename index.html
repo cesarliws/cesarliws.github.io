@@ -85,28 +85,28 @@
             <h2>Destaques do Livro</h2>
             <div class="highlight-cards">
                 <div class="card">
-                    <h3>Vá Além do Básico: Domine Padrões Profissionais</h3>
-                    <p>Mergulhe em tópicos avançados essenciais para aplicações de alta performance, como a criação e gerenciamento de um <strong>Thread Pool personalizado</strong>, e construa arquiteturas escaláveis que lidam com centenas de tarefas de forma eficiente.</p>
+                    <h3>Performance Extrema com Padrões Avançados</h3>
+                    <p>Vá além do básico com o padrão <strong>Leitores-Escritores</strong> (TLightweightMREW), otimizando o acesso a dados para performance máxima. Aprenda a evitar contenção com <strong>threadvar</strong> e domine operações atômicas com TInterlocked.</p>
                 </div>
                 <div class="card">
                     <h3>Crie Apps Mobile Realmente Responsivos</h3>
-                    <p>Este livro dedica um módulo inteiro às <strong>particularidades da concorrência em plataformas mobile</strong>. Aprenda a evitar os temidos erros de "Application Not Responding" (ANRs) no Android e a garantir uma experiência de usuário fluida.</p>
+                    <p>Um módulo inteiro dedicado às <strong>particularidades da concorrência em mobile</strong>. Aprenda a evitar os temidos erros de "Application Not Responding" (ANRs) no Android e a garantir uma UI fluida no iOS com exemplos práticos.</p>
                 </div>
-                <div class="card">
-                    <h3>Sincronização Desmistificada</h3>
-                    <p>Domine <code>TCriticalSection</code>, <code>TMutex</code>, <code>TMonitor</code>, <code>TEvent</code> e <code>TSemaphore</code>. Aprenda não apenas <em>como</em> usá-las, mas <em>quando</em> e <em>porquê</em>, com exemplos práticos para prevenir <em>Race Conditions</em> e <em>Deadlocks</em>.</p>
+                 <div class="card">
+                    <h3>Arquitetura de Backend Escalável</h3>
+                    <p>Projete serviços e APIs robustas. Domine o gerenciamento de pools de threads com <strong>TThreadPool</strong> para controlar recursos e use padrões como <strong>TConditionVariableCS</strong> e <strong>TCountdownEvent</strong> para orquestrar fluxos de trabalho complexos e eficientes.</p>
                 </div>
                 <div class="card">
                     <h3>A Elegância da Parallel Programming Library (PPL)</h3>
-                    <p>Modernize seu código com <code>TTask</code>, <code>IFuture</code> e <code>TParallel.For</code>. Orquestre fluxos de trabalho complexos, processe dados em paralelo e execute requisições de rede de forma elegante, escrevendo menos código e alcançando mais performance.</p>
+                    <p>Modernize seu código com <strong>TTask, IFuture e TParallel.For</strong>. Orquestre fluxos de trabalho, processe dados em paralelo e execute requisições de rede de forma elegante, escrevendo menos código e alcançando mais performance.</p>
                 </div>
                 <div class="card">
-                    <h3>Padrões de Arquitetura e Código Limpo</h3>
-                    <p>Uma aplicação <em>multithreaded</em> robusta começa com uma boa arquitetura. Aprenda as melhores práticas para organizar seu código, desacoplar a lógica de negócio da UI e criar um código limpo, testável e de fácil manutenção.</p>
+                    <h3>Padrões de Banco de Dados Concorrente</h3>
+                     <p>Aprenda a arquitetura correta para acesso a banco de dados em threads. Do padrão Repository com Factory e a PPL, até o gerenciamento de TDataModule em threads e a otimização de performance com <strong>Connection Pooling</strong> do FireDAC.</p>
                 </div>
                 <div class="card">
                     <h3>Padrões Avançados de Resiliência</h3>
-                    <p>Crie <em>threads</em> à prova de falhas. Aprenda a implementar um <strong><code>TCancellationToken</code></strong> para um cancelamento cooperativo elegante e <strong>estratégias de <em>retry</em> com <em>backoff</em> exponencial</strong> para lidar com falhas de rede e serviços temporariamente indisponíveis.</p>
+                    <p>Crie <em>threads</em> à prova de falhas. Aprenda a implementar um <strong>TCancellationToken</strong> para um cancelamento cooperativo elegante e <strong>estratégias de <em>retry</em> com <em>backoff</em> exponencial</strong> para lidar com falhas de rede e serviços temporariamente indisponíveis.</p>
                 </div>
             </div>
         </section>
@@ -120,7 +120,7 @@
                     <ul>
                         <li>1.1: O Problema do Congelamento da Interface (UI Freeze)</li>
                         <li>1.2: O que é Processamento Concorrente e Assíncrono?</li>
-                        <li>1.3: Por que Usar Threads/Assincronismo? (Benefícios)</li>
+                        <li>1.3: Os Verdadeiros Objetivos da Concorrência: Responsividade, Escalabilidade e Performance</li>
                         <li>1.4: O Conceito de Thread</li>
                         <li>1.5: Quando NÃO usar Threads (e buscar alternativas)</li>
                     </ul>
@@ -128,30 +128,34 @@
                 <div>
                     <h4>2: Fundamentos de Threads em Delphi (TThread básico)</h4>
                     <ul>
-                        <li>2.1: A Classe TThread - Estrutura e Ciclo de Vida</li>
+                        <li>2.1: Criando e Gerenciando Threads Simples</li>
                         <li>2.2: Comunicando com a Thread Principal (Synchronize e Queue)</li>
-                        <li>2.3: Lidando com Múltiplas Threads e Dados Compartilhados</li>
+                        <li>2.3: Lidando com Múltiplas Threads e Dados Compartilhados (Introdução à Sincronização)</li>
                         <li>2.4: Threads Anônimas (TThread.CreateAnonymousThread)</li>
                     </ul>
                 </div>
                  <div>
                     <h4>3: Sincronização de Threads</h4>
                     <ul>
-                        <li>3.1: TCriticalSection</li>
-                        <li>3.2: TMonitor</li>
-                        <li>3.3: TMutex</li>
-                        <li>3.4: TSemaphore</li>
-                        <li>3.5: TEvent</li>
+                        <li>3.1: TCriticalSection - Aprofundando na Exclusão Mútua Simples</li>
+                        <li>3.2: TMonitor - Sincronização de Múltiplas Threads com um Único Objeto</li>
+                        <li>3.3: TMutex - Sincronização entre Processos</li>
+                        <li>3.4: TSemaphore - Controle de Acesso a Recursos Limitados</li>
+                        <li>3.5: TEvent - Sinalização entre Threads</li>
+                        <li>3.6: Otimizando Acesso Concorrente: O Padrão Leitores-Escritores</li>
+                        <li>3.7: TCountdownEvent - Sincronizando a Conclusão de Múltiplas Tarefas</li>
+                        <li>3.8: WaitForMultipleObjects - Espera Coordenada em Múltiplos Eventos</li>
                     </ul>
                 </div>
                 <div>
                     <h4>4: Gerenciamento e Cancelamento de Threads</h4>
                     <ul>
-                        <li>4.1: Início e Pausa Controlada</li>
-                        <li>4.2: Cancelamento Gentil (Terminate e WaitFor)</li>
-                        <li>4.3: Cancelamento Cooperativo com TCancellationToken</li>
-                        <li>4.4: Tratamento de Exceções em Threads</li>
-                        <li>4.5: Estratégias de Reprocessamento e Retry</li>
+                        <li>4.1: Início e Pausa Controlada de Threads</li>
+                        <li>4.2: Gerenciando a Prioridade de Execução (TThread.Priority)</li>
+                        <li>4.3: Cancelamento Gentil de Threads (Terminate e WaitFor)</li>
+                        <li>4.4: Cancelamento Cooperativo com TCancellationToken</li>
+                        <li>4.5: Tratamento de Exceções em Threads</li>
+                        <li>4.6: Estratégias de Reprocessamento e Retry em Threads</li>
                     </ul>
                 </div>
                 <div>
@@ -172,28 +176,33 @@
                         <li>6.3: TParallel.For</li>
                         <li>6.4: Coordenação de Tarefas</li>
                         <li>6.5: Cancelamento de Tarefas PPL</li>
+                        <li>6.6: TParallelArray</li>
                     </ul>
                 </div>
                  <div>
                     <h4>7: Tópicos Avançados em Threads</h4>
                     <ul>
                         <li>7.1: Criando um Thread Pool Personalizado</li>
-                        <li>7.2: Gerenciamento de Memória e Multithreading</li>
-                        <li>7.3: TInterlocked - Operações Atômicas</li>
+                        <li>7.2: TInterlocked - Operações Atômicas</li>
+                        <li>7.3: Gerenciamento de Memória e Multithreading</li>
+                        <li>7.4: Gerenciamento Avançado da PPL: TThreadPool e TThreadPoolStats</li>
+                        <li>7.5: Sincronização Condicional: TConditionVariableCS</li>
                     </ul>
                 </div>
                 <div>
                     <h4>8: Melhores Práticas e Depuração</h4>
                     <ul>
-                        <li>8.1: Organização do Código</li>
-                        <li>8.2: Coleções Thread-Safe</li>
-                        <li>8.3: Prevenção de Deadlocks e Race Conditions</li>
-                        <li>8.5: Depuração de Aplicações Multithreaded</li>
+                        <li>8.1: Organização do Código (Threads em Units Separadas)</li>
+                        <li>8.2: Evitando Concorrência com threadvar</li>
+                        <li>8.3: Dados Compartilhados e Coleções Thread-Safe</li>
+                        <li>8.4: Prevenção de Deadlocks e Race Conditions</li>
+                        <li>8.6: Depuração de Aplicações Multithreaded</li>
                     </ul>
                 </div>
                  <div>
                     <h4>9: Threads e Concorrência em Aplicações Mobile</h4>
                     <ul>
+                        <li>9.1: Introdução à Concorrência em Mobile</li>
                         <li>9.2: Prevenção de ANRs no Android</li>
                         <li>9.3: Concorrência no iOS: Regras e APIs Nativas</li>
                         <li>9.6: Requisições REST Paralelas</li>
@@ -205,8 +214,20 @@
                     <ul>
                         <li>10.1: Processamento Paralelo de Arquivos em Lote</li>
                         <li>10.2: Requisições de Rede Assíncronas e Paralelas</li>
-                        <li>10.3: Simulações e Cálculos Intensivos</li>
+                        <li>10.3: Simulações e Cálculos Intensivos de Dados em Paralelo</li>
                         <li>10.4: Orquestração de Fluxos de Trabalho Complexos</li>
+                        <li>10.5: Pipeline de Tarefas com Máquina de Estado</li>
+                    </ul>
+                </div>
+                 <div>
+                    <h4>11: Aplicações Práticas de Banco de Dados</h4>
+                    <ul>
+                        <li>11.1: Os Princípios Inegociáveis: A Doutrina</li>
+                        <li>11.2: Exemplo Essencial: TDataModule em uma TThread</li>
+                        <li>11.3: Otimização com Connection Pooling do FireDAC</li>
+                        <li>11.4: Alternativa Sem Threads: Execução Assíncrona (amAsync)</li>
+                        <li>11.5: Padrão Repository e Factory com a PPL</li>
+                        <li>11.6: Considerações para DBExpress</li>
                     </ul>
                 </div>
             </div>
@@ -248,13 +269,13 @@
                 if (mailerLiteForm && mailerLiteForm.innerHTML.trim() === '') {
                     
                     // Cria o conteúdo HTML do botão de fallback
-                    const fallbackHTML = `
+                    const fallbackHTML = 
                         <div class="fallback-form">
                             <h3>Seja o primeiro a saber!</h3>
                             <p>Deixe seu e-mail para ser notificado sobre o lançamento, novidades e descontos exclusivos.</p>
                             <button id="fallback-button">Inscreva-se para o Lançamento</button>
                         </div>
-                    `;
+                    ;
                     
                     // Insere o HTML do fallback no lugar do formulário original
                     mailerLiteForm.innerHTML = fallbackHTML;
