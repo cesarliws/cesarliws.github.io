@@ -9,6 +9,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="icon" href="favicon.ico" />
+    <style>
+        .new-badge {
+            background-color: #10B981; /* Green 500 from Tailwind */
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 9999px;
+            margin-left: 8px;
+            vertical-align: middle;
+            text-transform: uppercase;
+        }
+    </style>
 </head>
 <body>
 
@@ -86,7 +99,7 @@
             <div class="highlight-cards">
                 <div class="card">
                     <h3>Performance Extrema com Padrões Avançados</h3>
-                    <p>Vá além do básico com o padrão <strong>Leitores-Escritores</strong> (TLightweightMREW), otimizando o acesso a dados para performance máxima. Aprenda a evitar contenção com <strong>threadvar</strong> e domine operações atômicas com TInterlocked.</p>
+                    <p>Vá além do básico com o padrão <strong>Leitores-Escritores</strong> (TLightweightMREW), otimizando o acesso a dados para performance máxima. Aprenda a evitar contenção com <strong>threadvar</strong> e domine operações atômicas com <strong>TInterlocked</strong>.</p>
                 </div>
                 <div class="card">
                     <h3>Crie Apps Mobile Realmente Responsivos</h3>
@@ -102,7 +115,7 @@
                 </div>
                 <div class="card">
                     <h3>Padrões de Banco de Dados Concorrente</h3>
-                     <p>Aprenda a arquitetura correta para acesso a banco de dados em threads. Do padrão Repository com Factory e a PPL, até o gerenciamento de TDataModule em threads e a otimização de performance com <strong>Connection Pooling</strong> do FireDAC.</p>
+                     <p>Aprenda a arquitetura correta para acesso a banco de dados em threads. Do <strong>padrão Repository com Factory</strong> e a PPL, até o gerenciamento de TDataModule em threads e a otimização de performance com <strong>Connection Pooling</strong> do FireDAC.</p>
                 </div>
                 <div class="card">
                     <h3>Padrões Avançados de Resiliência</h3>
@@ -120,7 +133,7 @@
                     <ul>
                         <li>1.1: O Problema do Congelamento da Interface (UI Freeze)</li>
                         <li>1.2: O que é Processamento Concorrente e Assíncrono?</li>
-                        <li>1.3: Os Verdadeiros Objetivos da Concorrência: Responsividade, Escalabilidade e Performance</li>
+                        <li>1.3: Os Verdadeiros Objetivos da Concorrência<span class="new-badge">Revisado</span></li>
                         <li>1.4: O Conceito de Thread</li>
                         <li>1.5: Quando NÃO usar Threads (e buscar alternativas)</li>
                     </ul>
@@ -130,7 +143,7 @@
                     <ul>
                         <li>2.1: Criando e Gerenciando Threads Simples</li>
                         <li>2.2: Comunicando com a Thread Principal (Synchronize e Queue)</li>
-                        <li>2.3: Lidando com Múltiplas Threads e Dados Compartilhados (Introdução à Sincronização)</li>
+                        <li>2.3: Lidando com Múltiplas Threads e Dados Compartilhados</li>
                         <li>2.4: Threads Anônimas (TThread.CreateAnonymousThread)</li>
                     </ul>
                 </div>
@@ -138,20 +151,20 @@
                     <h4>3: Sincronização de Threads</h4>
                     <ul>
                         <li>3.1: TCriticalSection - Aprofundando na Exclusão Mútua Simples</li>
-                        <li>3.2: TMonitor - Sincronização de Múltiplas Threads com um Único Objeto</li>
+                        <li>3.2: TMonitor - Sincronização de Múltiplas Threads</li>
                         <li>3.3: TMutex - Sincronização entre Processos</li>
                         <li>3.4: TSemaphore - Controle de Acesso a Recursos Limitados</li>
                         <li>3.5: TEvent - Sinalização entre Threads</li>
-                        <li>3.6: Otimizando Acesso Concorrente: O Padrão Leitores-Escritores</li>
-                        <li>3.7: TCountdownEvent - Sincronizando a Conclusão de Múltiplas Tarefas</li>
-                        <li>3.8: WaitForMultipleObjects - Espera Coordenada em Múltiplos Eventos</li>
+                        <li>3.6: O Padrão Leitores-Escritores<span class="new-badge">Novo</span></li>
+                        <li>3.7: TCountdownEvent<span class="new-badge">Novo</span></li>
+                        <li>3.8: WaitForMultipleObjects<span class="new-badge">Novo</span></li>
                     </ul>
                 </div>
                 <div>
                     <h4>4: Gerenciamento e Cancelamento de Threads</h4>
                     <ul>
                         <li>4.1: Início e Pausa Controlada de Threads</li>
-                        <li>4.2: Gerenciando a Prioridade de Execução (TThread.Priority)</li>
+                        <li>4.2: Gerenciando a Prioridade de Execução (TThread.Priority)<span class="new-badge">Novo</span></li>
                         <li>4.3: Cancelamento Gentil de Threads (Terminate e WaitFor)</li>
                         <li>4.4: Cancelamento Cooperativo com TCancellationToken</li>
                         <li>4.5: Tratamento de Exceções em Threads</li>
@@ -185,15 +198,15 @@
                         <li>7.1: Criando um Thread Pool Personalizado</li>
                         <li>7.2: TInterlocked - Operações Atômicas</li>
                         <li>7.3: Gerenciamento de Memória e Multithreading</li>
-                        <li>7.4: Gerenciamento Avançado da PPL: TThreadPool e TThreadPoolStats</li>
-                        <li>7.5: Sincronização Condicional: TConditionVariableCS</li>
+                        <li>7.4: Gerenciamento Avançado da PPL: TThreadPool<span class="new-badge">Novo</span></li>
+                        <li>7.5: Sincronização Condicional: TConditionVariableCS<span class="new-badge">Novo</span></li>
                     </ul>
                 </div>
                 <div>
                     <h4>8: Melhores Práticas e Depuração</h4>
                     <ul>
-                        <li>8.1: Organização do Código (Threads em Units Separadas)</li>
-                        <li>8.2: Evitando Concorrência com threadvar</li>
+                        <li>8.1: Organização do Código</li>
+                        <li>8.2: Evitando Concorrência com threadvar<span class="new-badge">Novo</span></li>
                         <li>8.3: Dados Compartilhados e Coleções Thread-Safe</li>
                         <li>8.4: Prevenção de Deadlocks e Race Conditions</li>
                         <li>8.6: Depuração de Aplicações Multithreaded</li>
@@ -214,13 +227,13 @@
                     <ul>
                         <li>10.1: Processamento Paralelo de Arquivos em Lote</li>
                         <li>10.2: Requisições de Rede Assíncronas e Paralelas</li>
-                        <li>10.3: Simulações e Cálculos Intensivos de Dados em Paralelo</li>
+                        <li>10.3: Simulações e Cálculos Intensivos de Dados</li>
                         <li>10.4: Orquestração de Fluxos de Trabalho Complexos</li>
                         <li>10.5: Pipeline de Tarefas com Máquina de Estado</li>
                     </ul>
                 </div>
                  <div>
-                    <h4>11: Aplicações Práticas de Banco de Dados</h4>
+                    <h4>11: Aplicações Práticas de Banco de Dados<span class="new-badge">Novo</span></h4>
                     <ul>
                         <li>11.1: Os Princípios Inegociáveis: A Doutrina</li>
                         <li>11.2: Exemplo Essencial: TDataModule em uma TThread</li>
