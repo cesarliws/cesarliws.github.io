@@ -77,57 +77,6 @@ header {
     font-weight: 400;
 }
 
-.form-container {
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 25px;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.form-container h3 {
-    margin-top: 0;
-    font-size: 1.4em;
-}
-
-.form-container p {
-    margin: 0 0 15px 0;
-}
-
-.form-container form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-@media (min-width: 500px) {
-    .form-container form {
-        flex-direction: row;
-    }
-}
-
-.form-container input[type="email"] {
-    flex-grow: 1;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1em;
-}
-
-.form-container button {
-    padding: 12px 20px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 1em;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.form-container button:hover {
-    background-color: #005bb5;
-}
-
 .release-note {
     font-size: 0.9em;
     margin-top: 15px !important;
@@ -149,42 +98,12 @@ h2 {
     margin-bottom: 40px;
 }
 
-#highlights .highlight-cards {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 30px;
-}
-
-@media (min-width: 600px) {
-    #highlights .highlight-cards {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-@media (min-width: 900px) {
-    #highlights .highlight-cards {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-#highlights .card {
-    background-color: white;
-    padding: 25px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-#highlights .card h3 {
-    margin-top: 0;
-    color: var(--primary-color);
-}
-
 #table-of-contents .summary-grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 30px;
 }
 
-/* AQUI A MUDANÇA PARA 2 COLUNAS */
 @media (min-width: 768px) {
     #table-of-contents .summary-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -196,7 +115,7 @@ h2 {
     color: var(--dark-blue);
     border-bottom: 2px solid var(--primary-color);
     padding-bottom: 10px;
-}
+}    
 
 #table-of-contents ul {
     list-style: none;
@@ -213,7 +132,6 @@ h2 {
     text-indent: 1.5em;
 }
 
-/* Estilos para a nova seção "Para Quem é Este Livro?" */
 #for-who .for-who-cards {
     display: grid;
     grid-template-columns: 1fr;
@@ -256,35 +174,6 @@ h2 {
     text-indent: 0; /* Remove o recuo do primeiro parágrafo para não ficar estranho após a foto */
 }
 
-.fallback-form h3, .fallback-form p {
-    text-align: center;
-}
-
-#fallback-button {
-    display: block;
-    width: 100%;
-    padding: 15px 20px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 1.1em;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    text-align: center;
-}
-
-#fallback-button:hover {
-    background-color: #005bb5;
-}
-
-/* Alinha o texto à esquerda em telas maiores, mantendo a consistência do layout */
-@media (min-width: 768px) {
-    .fallback-form h3, .fallback-form p {
-        text-align: left;
-    }
-}
 footer {
     background-color: var(--dark-blue);
     color: var(--light-text);
@@ -292,4 +181,158 @@ footer {
     padding: 20px 0;
     margin-top: 40px;
 }
+/* */
 
+.button {
+    display: inline-block;
+    padding: 15px 30px;
+    background-color: var(--primary-color);
+    color: var(--light-text);
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #005bb5;
+}
+
+
+.purchase-info {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.purchase-info h3 {
+    margin-top: 0;
+    color: #93c5fd; /* Azul claro para destaque */
+}
+
+.price {
+    font-size: 1.8em;
+    font-weight: 300;
+    margin: 10px 0;
+}
+
+.price del {
+    font-size: 0.6em;
+    color: #ef4444; /* Vermelho para o preço antigo */
+    margin-right: 10px;
+}
+
+.price strong {
+    font-weight: 700;
+    color: #34d399; /* Verde para o preço novo */
+}
+
+.discount-badge {
+    background-color: #10B981;
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 9999px;
+    margin-left: 10px;
+    vertical-align: middle;
+    text-transform: uppercase;
+}
+
+.primary-buy-button {
+    display: block;
+    text-align: center;
+    font-size: 1.2em;
+    padding: 18px 30px;
+}
+
+.small-text {
+    font-size: 0.8em;
+    opacity: 0.8;
+    margin-top: 5px;
+}
+
+.international-stores {
+    margin-top: 20px;
+}
+
+.international-stores h4 {
+    margin-bottom: 5px;
+    font-size: 1em;
+}
+
+.international-stores a {
+    color: #60a5fa;
+    text-decoration: none;
+}
+
+.international-stores a:hover {
+    text-decoration: underline;
+}
+
+.toc-columns {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+@media (min-width: 768px) {
+    .toc-columns {
+        flex-direction: row;
+        gap: 60px;
+    }
+}
+
+.toc-column {
+    flex: 1;
+}
+
+#contents h3 {
+    color: var(--dark-blue);
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 5px;
+    margin-top: 0;
+}
+
+#contents ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+#contents ul li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+#contents ul li strong {
+    color: var(--dark-blue);
+}
+
+#mastery {
+    background-color: #ffffff; /* Fundo branco para contraste */
+}
+
+#mastery ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 40px;
+}
+
+#mastery li {
+    font-size: 1.1em;
+    padding-left: 35px; /* Espaço para o ícone */
+    position: relative;
+    margin-bottom: 20px;
+}
+
+#mastery li::before {
+    content: '✓'; /* Caractere de check */
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #10B981; /* Verde */
+    font-size: 1.5em;
+    font-weight: bold;
+    line-height: 1;
+}
