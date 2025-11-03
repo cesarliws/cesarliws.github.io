@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delphi Multithreading by Cesar Romero - English Edition</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon.ico">
+</head>
+
+<body>
+
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="cover-image">
+                    <img src="cover_en.png" alt="Delphi Multithreading Book Cover">
+                </div>
+                <div class="header-text">
+                    <h1>Delphi Multithreading</h1>
+                    <h2>Threads, Concurrency, Parallelism and Asynchronous Programming</h2>
+                    <p class="subtitle">The Definitive Guide to Building Modern, Fast, and Responsive Delphi
+                        Applications.</p>
+                    
+                    <div class="purchase-info">
+                        <h3>Available Worldwide</h3>
+                        <p class="price">
+                            <strong>$54.99 (USD)</strong>
+                        </p>
+                        <a href="https://www.amazon.com/dp/6501779057" target="_blank"
+                            class="button primary-buy-button">Buy on Amazon.com (USA)</a>
+                        <p class="small-text">Available in print format from Amazon stores worldwide.</p>
+                    </div>
+
+                    <div class="international-stores">
+                        <h4>International Amazon Stores:</h4>
+                        <a href="https://www.amazon.ca/dp/6501779057" target="_blank">Canada</a> |
+                        <a href="https://www.amazon.co.uk/dp/6501779057" target="_blank">UK</a> |
+                        <a href="https://www.amazon.de/dp/6501779057" target="_blank">Germany</a> |
+                        <a href="https://www.amazon.fr/dp/6501779057" target="_blank">France</a> |
+                        <a href="https://www.amazon.es/dp/6501779057" target="_blank">Spain</a> |
+                        <a href="https://www.amazon.it/dp/6501779057" target="_blank">Italy</a> |
+                        <a href="https://www.amazon.com.au/dp/6501779057" target="_blank">Australia</a>
+                        <p class="small-text">Also available on Amazon in NL, PL, BE, and IE.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section id="description">
+            <h2>Does your Delphi application freeze during long operations?</h2>
+            <p>A frozen interface during a long-running operation is the silent enemy of any modern application. This
+                book is the definitive map for mastering concurrent programming in Delphi, guiding the reader from the
+                fundamentals of the classic `TThread` to the mastery of the modern Parallel Programming Library (PPL).
+            </p>
+            <p>Drawing on 30 years of experience in software architecture, this work is designed to be a complete
+                training course, guiding both the programmer taking their first steps into threads and the architect
+                seeking to optimize performance in high-demand scenarios.</p>
+            <p><strong>With 548 pages, this is a complete training course that takes you from zero to a professional
+                    level.</strong> Prepare to transform your desktop, mobile, and cloud applications, delivering the
+                performance and fluidity your users expect.</p>
+        </section>
+
+        <section id="for-who">
+            <h2>Who is This Book For?</h2>
+            <div class="for-who-cards">
+                <div class="card">
+                    <h3>For the Beginner Developer</h3>
+                    <p>If you're just starting with threads, this book is your guide. Learn the fundamentals clearly,
+                        with step-by-step examples, and build a solid foundation to avoid the most common mistakes.</p>
+                </div>
+                <div class="card">
+                    <h3>For the Experienced Developer</h3>
+                    <p>Take your skills to the next level. Dive deep into synchronization primitives, master the PPL,
+                        and learn to apply advanced architectural patterns to build more robust and scalable
+                        applications.</p>
+                </div>
+                <div class="card">
+                    <h3>For the Software Architect</h3>
+                    <p>Design high-performance systems. Understand the nuances of memory management, the specifics of
+                        mobile development, and the essential resilience patterns for critical systems.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="mastery">
+            <div class="container">
+                <h2>What You Will Master With This Book</h2>
+                <ul>
+                    <li><strong>End the "UI Freeze":</strong> Learn the right patterns to keep your VCL and FMX
+                        applications 100% responsive, safely delegating long-running tasks to the background.</li>
+                    <li><strong>Prevent Concurrency Errors:</strong> Master synchronization primitives
+                        (<i>TCriticalSection</i>, <i>TEvent</i>, <i>TMonitor</i>) to protect shared data and avoid the
+                        dreaded <i>deadlocks</i> and <i>race conditions</i>.</li>
+                    <li><strong>Choose the Right Tool:</strong> Understand once and for all when to use the classic
+                        <i>TThread</i> and when to leverage the power of the modern Parallel Programming Library (PPL)
+                        with <i>TTask</i> and <i>TParallel.For</i>.</li>
+                    <li><strong>Build Professional Architectures:</strong> Go beyond the code and learn to design
+                        robust, maintainable concurrent systems by applying patterns like Repository, Factory, Dependency
+                        Injection, and State Machines.</li>
+                    <li><strong>Conquer Mobile:</strong> Master the specifics of concurrency on Android and iOS,
+                        learning to avoid ANRs, process gallery images, and consume APIs in parallel without impacting
+                        the user experience.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="table-of-contents">
+            <h2>Full Table of Contents</h2>
+            <div class="summary-grid">
+                <div>
+                    <h4>1: Introduction to Concurrent and Asynchronous Processing</h4>
+                    <ul>
+                        <li>1.1 - The User Interface Freeze Problem (UI Freeze)</li>
+                        <li>1.2 - What Are Concurrent and Asynchronous Processing?</li>
+                        <li>1.3 - A Brief History of Concurrency: From TThread to the PPL</li>
+                        <li>1.4 - The True Goals of Concurrency</li>
+                        <li>1.5 - The Concept of a Thread</li>
+                        <li>1.6 - When NOT to Use Threads (and to Look for Alternatives)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>2: Fundamentals of Threads in Delphi (Basic TThread)</h4>
+                    <ul>
+                        <li>2.1 - Creating and Managing Simple Threads</li>
+                        <li>2.2 - Communicating with the Main Thread (Synchronize and Queue)</li>
+                        <li>2.3 - Dealing with Multiple Threads and Shared Data</li>
+                        <li>2.4 - Anonymous Threads (TThread.CreateAnonymousThread)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>3: Thread Synchronization</h4>
+                    <ul>
+                        <li>3.1 - TCriticalSection - A Deeper Look at Simple Mutual Exclusion</li>
+                        <li>3.2 - TMonitor - Synchronizing Multiple Threads</li>
+                        <li>3.3 - TMutex - Synchronization Between Processes</li>
+                        <li>3.4 - TSemaphore - Controlling Access to Limited Resources</li>
+                        <li>3.5 - TEvent - Signaling Between Threads</li>
+                        <li>3.6 - Optimizing Concurrent Access: The Readers-Writer Pattern</li>
+                        <li>3.7 - TCountdownEvent - Synchronizing the Completion of Multiple Tasks</li>
+                        <li>3.8 - WaitForMultipleObjects: Coordinated Waiting</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>4: Thread Management and Cancellation</h4>
+                    <ul>
+                        <li>4.1 - Controlled Start and Pause of Threads</li>
+                        <li>4.2 - Graceful Thread Cancellation (Terminate and WaitFor)</li>
+                        <li>4.3 - Cooperative Cancellation with TCancellationToken</li>
+                        <li>4.4 - Managing Execution Priority (TThread.Priority)</li>
+                        <li>4.5 - Exception Handling in Threads</li>
+                        <li>4.6 - Retry Strategies in Threads</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>5: Asynchronous Alternatives</h4>
+                    <ul>
+                        <li>5.1 - PostMessage and SendMessage</li>
+                        <li>5.2 - Asynchronous I/O (Overview)</li>
+                        <li>5.3 - Integrating Asynchronous I/O with Threads</li>
+                        <li>5.4 - Asynchronous Execution Pattern on the Main Thread</li>
+                        <li>5.5 - Communication via System.Messaging</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>6: Parallel Programming Library (PPL)</h4>
+                    <ul>
+                        <li>6.1 - Introduction to the PPL</li>
+                        <li>6.2 - The Heart of the PPL: ITask for Actions and IFuture&lt;T&gt; for Results</li>
+                        <li>6.3 - TParallel.For - Parallelizing Loops</li>
+                        <li>6.4 - Task Coordination (WaitForAll, WaitForAny)</li>
+                        <li>6.5 - PPL Task Cancellation</li>
+                        <li>6.6 - Other PPL Features: TParallelArray</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>7: Advanced Threading Topics</h4>
+                    <ul>
+                        <li>7.1 - Creating a Custom Thread Pool</li>
+                        <li>7.2 - TInterlocked - Atomic Operations</li>
+                        <li>7.3 - Memory Management and Multithreading</li>
+                        <li>7.4 - Advanced PPL Management</li>
+                        <li>7.5 - Conditional Synchronization: TConditionVariableCS</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>8: Best Practices and Debugging</h4>
+                    <ul>
+                        <li>8.1 - Code Organization</li>
+                        <li>8.2 - Avoiding Concurrency with threadvar</li>
+                        <li>8.3 - Thread-Safe Collections</li>
+                        <li>8.4 - Preventing Deadlocks and Race Conditions</li>
+                        <li>8.5 - Techniques for Minimizing Context Switches</li>
+                        <li>8.6 - Debugging Multithreaded Applications</li>
+                        <li>8.7 - Common Problems and How to Solve Them</li>
+                        <li>8.8 - Final Recommendations</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>9: Threads in Mobile Applications (Android and iOS)</h4>
+                    <ul>
+                        <li>9.1 - Introduction to Concurrency on Mobile</li>
+                        <li>9.2 - Preventing ANRs on Android</li>
+                        <li>9.3 - Concurrency on iOS: Rules and APIs</li>
+                        <li>9.4 - Platform-Specific Considerations</li>
+                        <li>9.5 - Evolution of Mobile Threading Features</li>
+                        <li>9.6 - Parallel REST Requests</li>
+                        <li>9.7 - Reading and Processing Gallery Images</li>
+                        <li>9.8 - Batch Processing for Maximum Speed</li>
+                        <li>9.9 - Final Recommendations for Mobile</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>10: Useful Examples with PPL</h4>
+                    <ul>
+                        <li>10.1 - Parallel Processing of Multiple Files</li>
+                        <li>10.2 - Asynchronous Network Requests with Pagination</li>
+                        <li>10.3 - Simulations and Intensive Calculations</li>
+                        <li>10.4 - Orchestrating Complex Workflows</li>
+                        <li>10.5 - Task Pipeline with a State Machine</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>11: Practical Database Applications</h4>
+                    <ul>
+                        <li>11.1 - The Non-Negotiable Principles (The Doctrine)</li>
+                        <li>11.2 - Essential Example: TDataModule in a TThread</li>
+                        <li>11.3 - Optimization with FireDAC Connection Pooling</li>
+                        <li>11.4 - Thread-less Alternative: Asynchronous Execution (amAsync)</li>
+                        <li>11.5 - Complete Concurrent Architecture with PPL</li>
+                        <li>11.6 - Specific Considerations for DBExpress</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Appendix</h4>
+                    <ul>
+                        <li>Appendix A: Quick Reference Guide to Synchronization Primitives</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="author">
+            <h2>About the Author</h2>
+            <div class="author-content">
+                <img src="cesar-romero-profile.png" alt="Photo of Cesar Romero" class="author-photo">
+                <p><strong>Cesar Romero</strong> is a Software Architect, Embarcadero MVP, and a veteran with nearly 30
+                    years of experience on the Delphi platform. A speaker and instructor, he specializes in designing
+                    high-performance systems for Desktop, Cloud, and Mobile, actively sharing his knowledge with the
+                    developer community.</p>
+                <p>His expertise is not limited to a single language; Cesar is a programming polyglot with deep
+                    knowledge in C#, Python, Go, JavaScript, and Java, as well as relational and NoSQL databases. This
+                    broad perspective gives him a unique insight into the challenges of modern software development,
+                    from migrating legacy systems to orchestrating microservices in the cloud.</p>
+                <p>As an <strong>Embarcadero MVP</strong>, Cesar is an active and respected voice in the developer
+                    community. He is a frequent speaker at events in Brazil and abroad, and has also served as an author
+                    and instructor for development teams, always aiming to share practical, high-level knowledge.</p>
+                <p>This book was born from the desire to fill a gap, consolidating years of study and practical
+                    experience into a definitive guide on <strong>multithreading</strong>, concurrency, and
+                    parallelism – one of the most challenging and essential topics for creating truly modern and
+                    performant Delphi applications.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Cesar Romero. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+
+</html>
