@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Black Friday: Delphi Multithreading com Desconto Exclusivo</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon.ico">
+    <style>
+        /* Estilos Específicos para a Landing Page de Black Friday */
+        body {
+            background-color: #0f172a; /* Fundo escuro para destacar a promoção */
+            color: #f1f5f9;
+            background-image: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+        }
+
+        .bf-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .promo-image {
+            width: 100%;
+            max-width: 600px;
+            border-radius: 15px;
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.1);
+            margin-bottom: 40px;
+            border: 1px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            font-weight: 900;
+            margin-bottom: 20px;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .highlight-blue {
+            color: #38bdf8;
+        }
+
+        .intro-text {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #cbd5e1;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .price-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #fbbf24; /* Amarelo/Dourado Black Friday */
+            border-radius: 15px;
+            padding: 30px;
+            margin: 40px 0;
+            display: inline-block;
+            position: relative;
+        }
+
+        .price-box::before {
+            content: 'OFERTA BLACK FRIDAY';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #fbbf24;
+            color: #000;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .old-price {
+            font-size: 1.2em;
+            color: #94a3b8;
+            text-decoration: line-through;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .new-price {
+            font-size: 3.5em;
+            font-weight: 900;
+            color: #fbbf24; /* Dourado */
+            line-height: 1;
+        }
+
+        .cta-button {
+            background-color: #10b981; /* Verde Compra */
+            color: white;
+            font-size: 1.5em;
+            padding: 20px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 20px;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            background-color: #059669;
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
+        }
+
+        .benefits-list {
+            text-align: left;
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: rgba(255, 255, 255, 0.03);
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        .benefits-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .benefits-list li {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .check-icon {
+            color: #fbbf24;
+            margin-right: 15px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .footer-note {
+            font-size: 0.9em;
+            color: #64748b;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #1e293b;
+        }
+
+        .back-link {
+            color: #38bdf8;
+            text-decoration: none;
+            margin-top: 20px;
+            display: inline-block;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="bf-container">
+        
+        <!-- Imagem Principal -->
+        <img src="black_friday_2025.png" alt="Banner Black Friday Delphi Multithreading" class="promo-image">
+
+        <!-- Título e Gancho -->
+        <h1>Black Friday Delphi:<br><span class="highlight-blue">O Guia Definitivo</span> com Desconto Exclusivo!</h1>
+
+        <p class="intro-text">
+            Você já travou a interface do seu sistema com uma consulta lenta ao banco de dados? Tem receio de usar threads por causa de deadlocks e race conditions?
+            <br><br>
+            A hora de dominar a concorrência em Delphi é agora.
+        </p>
+
+        <!-- Caixa de Preço -->
+        <div class="price-box">
+            <span class="old-price">De R$ 297,36</span>
+            <span class="new-price">R$ 245,00</span>
+            <br>
+            <a href="https://clubedeautores.com.br/livro/delphi-multithreading" target="_blank" class="cta-button">
+                GARANTIR MEU DESCONTO
+            </a>
+            <p style="font-size: 0.9em; margin-top: 15px; color: #94a3b8;">Edição Impressa • Entrega para todo o Brasil</p>
+        </div>
+
+        <p class="intro-text">
+            Este não é apenas um livro, é um curso completo de 548 páginas que te leva do zero à arquitetura de sistemas concorrentes de alta performance.
+        </p>
+
+        <!-- Lista de Benefícios -->
+        <div class="benefits-list">
+            <ul>
+                <li><span class="check-icon">✔</span> Domine TThread e a PPL (Parallel Programming Library).</li>
+                <li><span class="check-icon">✔</span> Aprenda a evitar os erros que derrubam aplicações em produção.</li>
+                <li><span class="check-icon">✔</span> Construa sistemas Mobile e Desktop fluidos e responsivos.</li>
+            </ul>
+        </div>
+
+        <p style="color: #fbbf24; font-weight: bold; font-size: 1.1em;">
+            Garanta sua cópia física com desconto e eleve o nível da sua carreira.
+        </p>
+
+        <a href="https://clubedeautores.com.br/livro/delphi-multithreading" target="_blank" class="back-link" style="font-size: 1.2em; font-weight: bold;">
+            👉 CLIQUE AQUI PARA COMPRAR NO CLUBE DOS AUTORES
+        </a>
+
+        <div class="footer-note">
+            <p>(Oferta válida por tempo limitado para a Edição em Português para vendas no site Clube dos Autores)</p>
+            <p>#DelphiMultithreadingBook #Delphi #BlackFriday #Promoção #LivrosDeProgramação #Multithreading #Desenvolvimento #CarreiraDev</p>
+            <br>
+            <a href="index_pt.html" class="back-link">← Voltar para a Página Principal do Livro</a>
+        </div>
+    </div>
+
+</body>
+</html>
